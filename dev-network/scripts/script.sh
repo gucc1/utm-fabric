@@ -24,7 +24,7 @@ COUNTER=1
 MAX_RETRY=10
 CORE_PEER_TLS_ENABLED=false
 
-CC_SRC_PATH="github.com/chaincode/chaincode_example02/go/"
+CC_SRC_PATH="github.com/chaincode/utm/"
 if [ "$LANGUAGE" = "node" ]; then
 	CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/chaincode_example02/node/"
 fi
