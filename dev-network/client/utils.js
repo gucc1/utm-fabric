@@ -50,7 +50,7 @@ const createFlightPlan = function(
       }
     }
   }
-  consoleLog(points)
+  return flightPoints
 }
 
 exports.createFlightPlan = createFlightPlan
