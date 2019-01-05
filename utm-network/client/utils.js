@@ -1,9 +1,12 @@
+function calc(delta, x0, y0, x) {
+  return Math.floor(delta * (x - x0) + y0)
+}
 const createFlightPlan = function(
   startLat,
   startLng,
   goalLat,
   goalLng,
-  startTime //unixtimeを1000倍した値
+  startTime
 ) {
   const deltaLat = Math.abs(goalLat - startLat)
   const deltaLng = Math.abs(goalLng - startLng)
@@ -53,4 +56,9 @@ const createFlightPlan = function(
   return flightPoints
 }
 
+const createPositionId = function(min, max) {
+  return Math.floor((Math.random() * (max - min + 1) + min) * 10000)
+}
+
 exports.createFlightPlan = createFlightPlan
+exports.createPositionId = createPositionId
