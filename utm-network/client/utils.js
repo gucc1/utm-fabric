@@ -8,12 +8,18 @@ const createFlightPlan = function(
   goalLng,
   startTime
 ) {
+  console.log(`start: ${startLat}, ${startLng}`)
+  console.log(`goal: ${goalLat}, ${goalLng}`)
+  console.log(`startTime: ${startTime}`)
   const deltaLat = Math.abs(goalLat - startLat)
   const deltaLng = Math.abs(goalLng - startLng)
+  console.log(`deltaLat: ${deltaLat}`)
+  console.log(`deltaLng: ${deltaLng}`)
 
   let flightPoints = []
   if (deltaLat > deltaLng) {
     if (startLat < goalLat) {
+      console.log('1')
       for (let i = startLat; i < goalLat; i++) {
         const point = {
           area: '' + i + calc(deltaLng / deltaLat, startLat, startLng, i) + '',
@@ -23,7 +29,8 @@ const createFlightPlan = function(
         startTime++
       }
     } else if (startLat > goalLat) {
-      for (let i = goalLat; startLat < i; i--) {
+      console.log('2')
+      for (let i = startLat; goalLat < i; i--) {
         const point = {
           area: '' + i + calc(deltaLng / deltaLat, startLat, startLng, i) + '',
           time: '' + startTime
@@ -34,6 +41,7 @@ const createFlightPlan = function(
     }
   } else if (deltaLat < deltaLng) {
     if (startLng < goalLng) {
+      console.log('3')
       for (let i = startLng; i < goalLng; i++) {
         const point = {
           area: '' + calc(deltaLat / deltaLng, startLng, startLat, i) + i + '',
@@ -43,7 +51,8 @@ const createFlightPlan = function(
         startTime++
       }
     } else if (startLng > goalLng) {
-      for (let i = goalLng; startLng < i; i--) {
+      console.log('4')
+      for (let i = startLng; goalLng < i; i--) {
         const point = {
           area: '' + calc(deltaLat / deltaLng, startLng, startLat, i) + i + '',
           time: '' + startTime
@@ -53,11 +62,12 @@ const createFlightPlan = function(
       }
     }
   }
+  console.log(flightPoints)
   return flightPoints
 }
 
 const createPositionId = function(min, max) {
-  return Math.floor((Math.random() * (max - min + 1) + min) * 10000)
+  return Math.floor((Math.random() * (max - min) + min) * 10000)
 }
 
 exports.createFlightPlan = createFlightPlan

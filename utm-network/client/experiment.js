@@ -1,13 +1,14 @@
 const fs = require('fs')
 const utils = require('./utils')
-const invoke = require('./invoke')
+// const invoke = require('./invoke')
 
-const numOfUsers = 100
-const minLat = 0
-const maxLat = 0
-const minLng = 0
-const maxLng = 0
-const startTime = Date.now() / 1000
+const numOfUsers = 1
+const minLat = 37.4806162
+const maxLat = 37.529089
+const minLng = 139.912265
+const maxLng = 139.95149
+
+const startTime = Math.floor(Date.now() / 1000)
 
 let users = []
 for (let i = 0; i < numOfUsers; i++) {
