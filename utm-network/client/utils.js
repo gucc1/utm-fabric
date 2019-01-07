@@ -62,7 +62,7 @@ const createFlightPlan = function(
       }
     }
   }
-  console.log(flightPoints)
+  // console.log(flightPoints)
   return flightPoints
 }
 

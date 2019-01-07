@@ -1,6 +1,6 @@
 const fs = require('fs')
 const utils = require('./utils')
-// const invoke = require('./invoke')
+const invoke = require('./invoke')
 
 const numOfUsers = 1
 const minLat = 37.4806162
@@ -28,7 +28,13 @@ for (let i = 0; i < numOfUsers; i++) {
 
 fs.writeFileSync('users.json', JSON.stringify(users))
 
-// invoke
-//   .invoke()
-//   .then(function() {})
-//   .catch(function() {})
+users.forEach(function(user) {
+  invoke
+    .exec(user)
+    .then(function(res) {
+      console.log(`success: ${res}`)
+    })
+    .catch(function(err) {
+      console.error(`error: ${err}`)
+    })
+})

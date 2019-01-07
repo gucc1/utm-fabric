@@ -13,6 +13,7 @@ var path = require('path')
 var util = require('util')
 var os = require('os')
 var fs = require('fs')
+const { performance } = require('perf_hooks')
 
 //
 var fabric_client = new Fabric_Client()
@@ -36,7 +37,10 @@ var store_path = path.join(__dirname, 'hfc-key-store')
 console.log('Store path:' + store_path)
 var tx_id = null
 
-var invoke = function() {
+// measure processing time
+let pstartTime, pendTime
+
+var invoke = function(args) {
   return new Promise(function(resolve, reject) {
     // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
     Fabric_Client.newDefaultKeyValueStore({ path: store_path })
@@ -71,16 +75,18 @@ var invoke = function() {
         var request = {
           targets: ['peer1', 'peer2'],
           chaincodeId: 'mycc',
-          fcn: 'invoke',
-          args: ['a', 'b', '10'],
+          fcn: 'registerPlan',
+          args: [args.name, JSON.stringify(args.flightPlan)],
           chainId: 'mychannel',
           txId: tx_id
         }
 
+        pstartTime = performance.now()
         // send the transaction proposal to the peers
         return channel.sendTransactionProposal(request)
       })
       .then(results => {
+        pendTime = performance.now()
         var proposalResponses = results[0]
         var proposal = results[1]
         let isProposalGood = false
@@ -193,6 +199,7 @@ var invoke = function() {
           console.log(
             'Successfully committed the change to the ledger by the peer'
           )
+          resolve(pendTime - pstartTime)
         } else {
           console.log(
             'Transaction failed to be committed to the ledger due to ::' +
@@ -202,9 +209,9 @@ var invoke = function() {
       })
       .catch(err => {
         console.error('Failed to invoke successfully :: ' + err)
-        reject(err)
+        reject(pendTime - pstartTime)
       })
   })
 }
 
-exports.invoke = invoke
+exports.exec = invoke
