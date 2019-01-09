@@ -193,6 +193,7 @@ var invoke = function(args) {
           console.error(
             'Failed to order the transaction. Error code: ' + results[0].status
           )
+          reject(pendTime - pstartTime)
         }
 
         if (results && results[1] && results[1].event_status === 'VALID') {
@@ -205,6 +206,7 @@ var invoke = function(args) {
             'Transaction failed to be committed to the ledger due to ::' +
               results[1].event_status
           )
+          reject(pendTime - pstartTime)
         }
       })
       .catch(err => {
