@@ -102,7 +102,7 @@ const createPositionId = function(min, max) {
   return Math.floor((Math.random() * (max - min) + min) * 10000)
 }
 
-const numOfUsers = 100
+const numOfUsers = 5
 const minLat = 37.4806162
 const maxLat = 37.529089
 const minLng = 139.912265
