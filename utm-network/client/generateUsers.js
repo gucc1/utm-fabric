@@ -94,7 +94,6 @@ const createFlightPlan = function(
       }
     }
   }
-  console.log(flightPoints)
   return [flightPoints, reservedPoints]
 }
 
@@ -102,7 +101,7 @@ const createPositionId = function(min, max) {
   return Math.floor((Math.random() * (max - min) + min) * 10000)
 }
 
-const numOfUsers = 5
+const numOfUsers = 100
 const minLat = 37.4806162
 const maxLat = 37.529089
 const minLng = 139.912265
@@ -123,7 +122,8 @@ for (let i = 0; i < numOfUsers; i++) {
       createPositionId(minLng, maxLng),
       createPositionId(minLat, maxLat),
       createPositionId(minLng, maxLng),
-      startTime
+      startTime,
+      reservedPoints
     )
     if (res[0].length > 0) {
       user.flightPlan = res[0]
