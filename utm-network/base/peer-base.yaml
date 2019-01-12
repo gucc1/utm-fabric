@@ -15,7 +15,7 @@ services:
       # https://docs.docker.com/compose/networking/
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_byfn
       - CORE_LOGGING_LEVEL=INFO
-      #- CORE_LOGGING_LEVEL=DEBUG
+      # - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_TLS_ENABLED=false
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
@@ -23,5 +23,6 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_REQUESTTIMEOUT=200s
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start

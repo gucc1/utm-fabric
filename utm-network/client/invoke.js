@@ -136,7 +136,7 @@ var invoke = function(args) {
               event_hub.unregisterTxEvent(transaction_id_string)
               event_hub.disconnect()
               resolve({ event_status: 'TIMEOUT' }) //we could use reject(new Error('Trnasaction did not complete within 30 seconds'));
-            }, 3000)
+            }, 30000)
             event_hub.registerTxEvent(
               transaction_id_string,
               (tx, code) => {
