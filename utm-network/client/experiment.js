@@ -3,8 +3,10 @@ const users = require('./users.json')
 const invoke = require('./invoke')
 
 fs.writeFileSync('res.txt', 'status time\n')
+const maxUsers = 100
 
-users.forEach(user => {
+for (let i = 0; i < maxUsers; i++) {
+  const user = users[i]
   invoke
     .exec(user)
     .then(function(res) {
@@ -15,4 +17,4 @@ users.forEach(user => {
       console.error(`error: ${err}`)
       fs.appendFileSync('res.txt', `error ${JSON.stringify(err)}\n`)
     })
-})
+}
