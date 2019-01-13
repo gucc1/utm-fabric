@@ -22,6 +22,7 @@ VERBOSE="$5"
 LANGUAGE=`echo "$LANGUAGE" | tr [:upper:] [:lower:]`
 COUNTER=1
 MAX_RETRY=10
+MAX_ORG=2
 CORE_PEER_TLS_ENABLED=false
 
 CC_SRC_PATH="github.com/chaincode/utm/"
@@ -59,7 +60,7 @@ createChannel() {
 }
 
 joinChannel () {
-	for org in 1 2; do
+	for((org=1;org<=$MAX_ORG;org++)); do
 	    # for peer in 0 1; do
 		peer=0
 		joinChannelWithRetry $peer $org
@@ -78,21 +79,32 @@ createChannel
 echo "Having all peers join the channel..."
 joinChannel
 
+for((org=1;org<=$MAX_ORG;org++)); do
+	echo "Updating anchor peers for org${org}..."
+	updateAnchorPeers 0 $org
+
+	echo "Installing chaincode on peer0.org${org}..."
+	installChaincode 0 $org
+done
+
+echo "Instantiating chaincode on peer0.org8..."
+instantiateChaincode 0 2
+
 ## Set the anchor peers for each org in the channel
-echo "Updating anchor peers for org1..."
-updateAnchorPeers 0 1
-echo "Updating anchor peers for org2..."
-updateAnchorPeers 0 2
+# echo "Updating anchor peers for org1..."
+# updateAnchorPeers 0 1
+# echo "Updating anchor peers for org2..."
+# updateAnchorPeers 0 2
 
 ## Install chaincode on peer0.org1 and peer0.org2
-echo "Installing chaincode on peer0.org1..."
-installChaincode 0 1
-echo "Install chaincode on peer0.org2..."
-installChaincode 0 2
+# echo "Installing chaincode on peer0.org1..."
+# installChaincode 0 1
+# echo "Install chaincode on peer0.org2..."
+# installChaincode 0 2
 
 # Instantiate chaincode on peer0.org2
-echo "Instantiating chaincode on peer0.org2..."
-instantiateChaincode 0 2
+# echo "Instantiating chaincode on peer0.org2..."
+# instantiateChaincode 0 2
 
 # Query chaincode on peer0.org1
 # echo "Querying chaincode on peer0.org1..."

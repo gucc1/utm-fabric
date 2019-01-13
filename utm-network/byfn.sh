@@ -31,6 +31,7 @@
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=false
+MAX_ORG=2
 
 # Print the usage message
 function printHelp() {
@@ -238,7 +239,7 @@ function upgradeNetwork() {
 # Tear down running network
 function networkDown() {
   # stop org3 containers also in addition to org1 and org2, in case we were running sample to add org3
-  docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH -f $COMPOSE_FILE_ORG3 down --volumes --remove-orphans
+  docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH down --volumes --remove-orphans
 
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
@@ -275,14 +276,52 @@ function replacePrivateKey() {
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.
   CURRENT_DIR=$PWD
-  cd crypto-config/peerOrganizations/org1.example.com/ca/
-  PRIV_KEY=$(ls *_sk)
-  cd "$CURRENT_DIR"
-  sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-  cd crypto-config/peerOrganizations/org2.example.com/ca/
-  PRIV_KEY=$(ls *_sk)
-  cd "$CURRENT_DIR"
-  sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+  for((i=1;i<=$MAX_ORG;i++));do
+    cd "crypto-config/peerOrganizations/org${i}.example.com/ca/"
+    PRIV_KEY=$(ls *_sk)
+    cd "$CURRENT_DIR"
+    sed $OPTS "s/CA${i}_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+  done
+  # cd crypto-config/peerOrganizations/org1.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
+  # cd crypto-config/peerOrganizations/org2.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
+  # cd crypto-config/peerOrganizations/org3.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CA3_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
+  # cd crypto-config/peerOrganizations/org4.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CA4_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
+  # cd crypto-config/peerOrganizations/org5.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CA5_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
+  # cd crypto-config/peerOrganizations/org6.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CA6_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
+  # cd crypto-config/peerOrganizations/org7.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CA7_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
+  # cd crypto-config/peerOrganizations/org8.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CA8_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
     rm docker-compose-e2e.yamlt
@@ -403,32 +442,47 @@ function generateChannelArtifacts() {
     exit 1
   fi
 
-  echo
-  echo "#################################################################"
-  echo "#######    Generating anchor peer update for Org1MSP   ##########"
-  echo "#################################################################"
-  set -x
-  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
-  res=$?
-  set +x
-  if [ $res -ne 0 ]; then
-    echo "Failed to generate anchor peer update for Org1MSP..."
-    exit 1
-  fi
+  for((i=1;i<=$MAX_ORG;i++));do
+    echo
+    echo "#################################################################"
+    echo "#######    Generating anchor peer update for Org${i}MSP   ##########"
+    echo "#################################################################"
+    set -x
+    configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate "./channel-artifacts/Org${i}MSPanchors.tx" -channelID $CHANNEL_NAME -asOrg "Org${i}MSP"
+    res=$?
+    set +x
+    if [ $res -ne 0 ]; then
+      echo "Failed to generate anchor peer update for Org${i}MSP..."
+      exit 1
+    fi
+  done
 
-  echo
-  echo "#################################################################"
-  echo "#######    Generating anchor peer update for Org2MSP   ##########"
-  echo "#################################################################"
-  set -x
-  configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate \
-    ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
-  res=$?
-  set +x
-  if [ $res -ne 0 ]; then
-    echo "Failed to generate anchor peer update for Org2MSP..."
-    exit 1
-  fi
+  # echo
+  # echo "#################################################################"
+  # echo "#######    Generating anchor peer update for Org1MSP   ##########"
+  # echo "#################################################################"
+  # set -x
+  # configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
+  # res=$?
+  # set +x
+  # if [ $res -ne 0 ]; then
+  #   echo "Failed to generate anchor peer update for Org1MSP..."
+  #   exit 1
+  # fi
+
+  # echo
+  # echo "#################################################################"
+  # echo "#######    Generating anchor peer update for Org2MSP   ##########"
+  # echo "#################################################################"
+  # set -x
+  # configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate \
+  #   ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
+  # res=$?
+  # set +x
+  # if [ $res -ne 0 ]; then
+  #   echo "Failed to generate anchor peer update for Org2MSP..."
+  #   exit 1
+  # fi
   echo
 }
 
@@ -518,7 +572,7 @@ else
   echo "${EXPMODE} for channel '${CHANNEL_NAME}' with CLI timeout of '${CLI_TIMEOUT}' seconds and CLI delay of '${CLI_DELAY}' seconds"
 fi
 # ask for confirmation to proceed
-askProceed
+# askProceed
 
 #Create the network using docker compose
 if [ "${MODE}" == "up" ]; then
