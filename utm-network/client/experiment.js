@@ -12,27 +12,29 @@ const resultFile = `results/org${numOfOrgs}-user${maxUsers}-${now}`
 fs.writeFileSync(resultFile, 'id status time\n')
 
 //chaincode containerを事前起動するためのinvoke
-console.log('Pre invoke: \n')
+console.log('========PRE INVOKE========')
 invoke
   .exec(users[0])
   .then(function(res) {
+    console.log('==========================')
     console.log(`success: ${res}`)
+    //本番
+    console.log('========INVOKE========')
+    for (let i = 1; i <= maxUsers; i++) {
+      const user = users[i]
+      invoke
+        .exec(user)
+        .then(function(res) {
+          console.log(`success: ${res}`)
+          fs.appendFileSync(resultFile, `${i} success ${JSON.stringify(res)}\n`)
+        })
+        .catch(function(err) {
+          console.error(`error: ${err}`)
+          fs.appendFileSync(resultFile, `${i} error ${JSON.stringify(err)}\n`)
+        })
+    }
+    console.log('==========================')
   })
   .catch(function(err) {
     console.error(`error: ${err}`)
   })
-
-//本番
-for (let i = 1; i < maxUsers; i++) {
-  const user = users[i]
-  invoke
-    .exec(user)
-    .then(function(res) {
-      console.log(`success: ${res}`)
-      fs.appendFileSync(resultFile, `${i + 1} success ${JSON.stringify(res)}\n`)
-    })
-    .catch(function(err) {
-      console.error(`error: ${err}`)
-      fs.appendFileSync(resultFile, `${i + 1} error ${JSON.stringify(err)}\n`)
-    })
-}

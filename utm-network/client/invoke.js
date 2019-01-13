@@ -99,8 +99,8 @@ var invoke = function(args) {
         // must send the proposal to endorsing peers
         var request = {
           targets: [
-            'peer1'
-            // 'peer2'
+            'peer1',
+            'peer2'
             // 'peer3',
             // 'peer4',
             // 'peer5',
@@ -170,7 +170,7 @@ var invoke = function(args) {
               event_hub.unregisterTxEvent(transaction_id_string)
               event_hub.disconnect()
               resolve({ event_status: 'TIMEOUT' }) //we could use reject(new Error('Trnasaction did not complete within 30 seconds'));
-            }, 30000)
+            }, 9999999)
             event_hub.registerTxEvent(
               transaction_id_string,
               (tx, code) => {
