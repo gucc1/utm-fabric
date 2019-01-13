@@ -25,10 +25,35 @@ var peer1 = fabric_client.newPeer('grpc://localhost:7051', {
   name: 'peer1'
 })
 channel.addPeer(peer1)
-var peer2 = fabric_client.newPeer('grpc://localhost:9051', {
+var peer2 = fabric_client.newPeer('grpc://localhost:8051', {
   name: 'peer2'
 })
 channel.addPeer(peer2)
+var peer3 = fabric_client.newPeer('grpc://localhost:9051', {
+  name: 'peer3'
+})
+channel.addPeer(peer3)
+var peer4 = fabric_client.newPeer('grpc://localhost:10051', {
+  name: 'peer4'
+})
+channel.addPeer(peer4)
+var peer5 = fabric_client.newPeer('grpc://localhost:11051', {
+  name: 'peer5'
+})
+channel.addPeer(peer5)
+var peer6 = fabric_client.newPeer('grpc://localhost:12051', {
+  name: 'peer6'
+})
+channel.addPeer(peer6)
+var peer7 = fabric_client.newPeer('grpc://localhost:13051', {
+  name: 'peer7'
+})
+channel.addPeer(peer7)
+var peer8 = fabric_client.newPeer('grpc://localhost:14051', {
+  name: 'peer8'
+})
+channel.addPeer(peer8)
+
 var order = fabric_client.newOrderer('grpc://localhost:7050')
 channel.addOrderer(order)
 
@@ -73,7 +98,16 @@ var invoke = function(args) {
         // changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
         // must send the proposal to endorsing peers
         var request = {
-          targets: ['peer1', 'peer2'],
+          targets: [
+            'peer1',
+            'peer2'
+            // 'peer3',
+            // 'peer4',
+            // 'peer5',
+            // 'peer6',
+            // 'peer7',
+            // 'peer8'
+          ],
           chaincodeId: 'mycc',
           fcn: 'registerPlan',
           args: [args.name, JSON.stringify(args.flightPlan)],
@@ -83,7 +117,7 @@ var invoke = function(args) {
 
         pstartTime = performance.now()
         // send the transaction proposal to the peers
-        return channel.sendTransactionProposal(request)
+        return channel.sendTransactionProposal(request, 9999999)
       })
       .then(results => {
         pendTime = performance.now()
