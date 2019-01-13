@@ -134,4 +134,4 @@ for (let i = 0; i < numOfUsers; i++) {
   }
 }
 
-fs.writeFileSync('users.json', JSON.stringify(users))
+fs.writeFileSync('data/users.json', JSON.stringify(users))

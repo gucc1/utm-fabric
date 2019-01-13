@@ -99,8 +99,8 @@ var invoke = function(args) {
         // must send the proposal to endorsing peers
         var request = {
           targets: [
-            'peer1',
-            'peer2'
+            'peer1'
+            // 'peer2'
             // 'peer3',
             // 'peer4',
             // 'peer5',

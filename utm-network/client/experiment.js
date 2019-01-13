@@ -1,5 +1,4 @@
 const fs = require('fs')
-const testUser = require('./data/testUser.json')
 const users = require('./data/users.json')
 const invoke = require('./invoke')
 
@@ -15,7 +14,7 @@ fs.writeFileSync(resultFile, 'id status time\n')
 //chaincode containerを事前起動するためのinvoke
 console.log('Pre invoke: \n')
 invoke
-  .exec(testUser)
+  .exec(users[0])
   .then(function(res) {
     console.log(`success: ${res}`)
   })
@@ -24,7 +23,7 @@ invoke
   })
 
 //本番
-for (let i = 0; i < maxUsers; i++) {
+for (let i = 1; i < maxUsers; i++) {
   const user = users[i]
   invoke
     .exec(user)
