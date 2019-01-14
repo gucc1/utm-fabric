@@ -100,13 +100,13 @@ var invoke = function(args) {
         var request = {
           targets: [
             'peer1',
-            'peer2'
-            // 'peer3',
-            // 'peer4',
-            // 'peer5',
-            // 'peer6',
-            // 'peer7',
-            // 'peer8'
+            'peer2',
+            'peer3',
+            'peer4',
+            'peer5',
+            'peer6',
+            'peer7',
+            'peer8'
           ],
           chaincodeId: 'mycc',
           fcn: 'registerPlan',

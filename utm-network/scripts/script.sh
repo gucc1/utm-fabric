@@ -22,7 +22,7 @@ VERBOSE="$5"
 LANGUAGE=`echo "$LANGUAGE" | tr [:upper:] [:lower:]`
 COUNTER=1
 MAX_RETRY=10
-MAX_ORG=2
+MAX_ORG=8
 CORE_PEER_TLS_ENABLED=false
 
 CC_SRC_PATH="github.com/chaincode/utm/"
@@ -87,8 +87,8 @@ for((org=1;org<=$MAX_ORG;org++)); do
 	installChaincode 0 $org
 done
 
-echo "Instantiating chaincode on peer0.org8..."
-instantiateChaincode 0 2
+echo "Instantiating chaincode on peer0.org1..."
+instantiateChaincode 0 1
 
 ## Set the anchor peers for each org in the channel
 # echo "Updating anchor peers for org1..."

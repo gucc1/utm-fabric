@@ -24,5 +24,7 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       - CORE_LEDGER_STATE_COUCHDBCONFIG_REQUESTTIMEOUT=200s
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+      - CORE_CHAINCODE_DEPLOYTIMEOUT=300s
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start

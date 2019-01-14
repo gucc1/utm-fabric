@@ -1,5 +1,5 @@
 #!/bin/bash
-NUM_OF_ORG=2
+NUM_OF_ORG=8
 export PATH="$PATH:/Users/gucc1/.ghq/github.com/gucc1/fabric-samples/bin"
 
 set -eu

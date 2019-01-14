@@ -9,12 +9,12 @@ volumes:
   orderer.example.com:
   peer0.org1.example.com:
   peer0.org2.example.com:
-  # peer0.org3.example.com:
-  # peer0.org4.example.com:
-  # peer0.org5.example.com:
-  # peer0.org6.example.com:
-  # peer0.org7.example.com:
-  # peer0.org8.example.com:
+  peer0.org3.example.com:
+  peer0.org4.example.com:
+  peer0.org5.example.com:
+  peer0.org6.example.com:
+  peer0.org7.example.com:
+  peer0.org8.example.com:
 
 networks:
   byfn:
@@ -44,53 +44,53 @@ services:
     networks:
       - byfn
 
-  # peer0.org3.example.com:
-  #   container_name: peer0.org3.example.com
-  #   extends:
-  #     file: base/docker-compose-base.yaml
-  #     service: peer0.org3.example.com
-  #   networks:
-  #     - byfn
+  peer0.org3.example.com:
+    container_name: peer0.org3.example.com
+    extends:
+      file: base/docker-compose-base.yaml
+      service: peer0.org3.example.com
+    networks:
+      - byfn
 
-  # peer0.org4.example.com:
-  #   container_name: peer0.org4.example.com
-  #   extends:
-  #     file: base/docker-compose-base.yaml
-  #     service: peer0.org4.example.com
-  #   networks:
-  #     - byfn
+  peer0.org4.example.com:
+    container_name: peer0.org4.example.com
+    extends:
+      file: base/docker-compose-base.yaml
+      service: peer0.org4.example.com
+    networks:
+      - byfn
 
-  # peer0.org5.example.com:
-  #   container_name: peer0.org5.example.com
-  #   extends:
-  #     file: base/docker-compose-base.yaml
-  #     service: peer0.org5.example.com
-  #   networks:
-  #     - byfn
+  peer0.org5.example.com:
+    container_name: peer0.org5.example.com
+    extends:
+      file: base/docker-compose-base.yaml
+      service: peer0.org5.example.com
+    networks:
+      - byfn
 
-  # peer0.org6.example.com:
-  #   container_name: peer0.org6.example.com
-  #   extends:
-  #     file: base/docker-compose-base.yaml
-  #     service: peer0.org6.example.com
-  #   networks:
-  #     - byfn
+  peer0.org6.example.com:
+    container_name: peer0.org6.example.com
+    extends:
+      file: base/docker-compose-base.yaml
+      service: peer0.org6.example.com
+    networks:
+      - byfn
 
-  # peer0.org7.example.com:
-  #   container_name: peer0.org7.example.com
-  #   extends:
-  #     file: base/docker-compose-base.yaml
-  #     service: peer0.org7.example.com
-  #   networks:
-  #     - byfn
+  peer0.org7.example.com:
+    container_name: peer0.org7.example.com
+    extends:
+      file: base/docker-compose-base.yaml
+      service: peer0.org7.example.com
+    networks:
+      - byfn
 
-  # peer0.org8.example.com:
-  #   container_name: peer0.org8.example.com
-  #   extends:
-  #     file: base/docker-compose-base.yaml
-  #     service: peer0.org8.example.com
-  #   networks:
-  #     - byfn
+  peer0.org8.example.com:
+    container_name: peer0.org8.example.com
+    extends:
+      file: base/docker-compose-base.yaml
+      service: peer0.org8.example.com
+    networks:
+      - byfn
 
   cli:
     container_name: cli
@@ -122,11 +122,11 @@ services:
       - orderer.example.com
       - peer0.org1.example.com
       - peer0.org2.example.com
-      # - peer0.org3.example.com
-      # - peer0.org4.example.com
-      # - peer0.org5.example.com
-      # - peer0.org6.example.com
-      # - peer0.org7.example.com
-      # - peer0.org8.example.com
+      - peer0.org3.example.com
+      - peer0.org4.example.com
+      - peer0.org5.example.com
+      - peer0.org6.example.com
+      - peer0.org7.example.com
+      - peer0.org8.example.com
     networks:
       - byfn
