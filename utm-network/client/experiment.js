@@ -4,10 +4,9 @@ const invoke = require('./invoke')
 
 const maxUsers = process.argv[2] || 1
 const numOfOrgs = process.argv[3] || 1
+const resultDir = process.argv[4] || Math.floor(Date.now() / 1000)
 
-const now = Math.floor(Date.now() / 1000)
-
-const resultFile = `results/org${numOfOrgs}-user${maxUsers}-${now}`
+const resultFile = `results/${resultDir}/org${numOfOrgs}-user${maxUsers}`
 
 fs.writeFileSync(resultFile, 'id status time\n')
 

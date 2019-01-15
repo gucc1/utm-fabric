@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-version: '2'
+version: '2.2'
+
 
 services:
   peer-base:
@@ -28,3 +29,5 @@ services:
       - CORE_CHAINCODE_DEPLOYTIMEOUT=300s
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
+    mem_limit: 2g
+    cpu_count: 1
