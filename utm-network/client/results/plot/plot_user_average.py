@@ -24,17 +24,17 @@ for numOfOrg in range(1, 9):
 
     # plt.plot(user1[:, 0], user1[:, 1])
     plt.plot([1, 5, 10, 50, 100], [user1_ave, user5_ave,
-                                   user10_ave, user50_ave, user100_ave])
+                                   user10_ave, user50_ave, user100_ave], label=str(numOfOrg) + ' node')
 
-    # 横軸は整数値にする
-    plt.gca().xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
+# 横軸は整数値にする
+plt.gca().xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
 
-    plt.title('Processing time : ' + str(numOfOrg) + ' node')
-    plt.xlim(1, 100)
-    plt.xlabel('Number of users')
-    plt.ylabel('Processing time(ms)')
+plt.title('Average Processing time')
+plt.xlim(1, 100)
+plt.xlabel('Number of users')
+plt.ylabel('Processing time(ms)')
+plt.legend()
 
-    # 保存
-    plt.savefig('processingTime-Org' + str(numOfOrg) + '-average.png')
-    plt.clf()
-    # plt.show()
+# 保存
+plt.savefig('processingTime-node-average.png')
+plt.show()
