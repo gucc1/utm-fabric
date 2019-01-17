@@ -1,39 +1,33 @@
 const fs = require('fs')
-const users = require('./data/users.json')
+//const users = require('./data/users.json')
 const invoke = require('./invoke')
 
-const maxUsers = process.argv[2] || 1
-const numOfOrgs = process.argv[3] || 1
-const resultDir = process.argv[4] || Math.floor(Date.now() / 1000)
+const startNumber = parseInt(process.argv[2], 10) || 0
+const userLength = parseInt(process.argv[3], 10) || 1
+const numOfOrgs = parseInt(process.argv[4], 10) || 1
+const resultDir = process.argv[5] || 'test'
 
-const resultFile = `results/${resultDir}/org${numOfOrgs}-user${maxUsers}`
+const users = require(`./data/users${userLength}.json`)
+
+const resultFile = `results/${resultDir}/node${numOfOrgs}-user${userLength}`
 
 fs.writeFileSync(resultFile, 'id status time\n')
 
-//chaincode containerを事前起動するためのinvoke
-console.log('========PRE INVOKE========')
-invoke
-  .exec(users[0])
-  .then(function(res) {
-    console.log('==========================')
-    console.log(`success: ${res}`)
-    //本番
-    console.log('========INVOKE========')
-    for (let i = 1; i <= maxUsers; i++) {
-      const user = users[i]
-      invoke
-        .exec(user)
-        .then(function(res) {
-          console.log(`success: ${res}`)
-          fs.appendFileSync(resultFile, `${i} success ${JSON.stringify(res)}\n`)
-        })
-        .catch(function(err) {
-          console.error(`error: ${err}`)
-          fs.appendFileSync(resultFile, `${i} error ${JSON.stringify(err)}\n`)
-        })
-    }
-    console.log('==========================')
-  })
-  .catch(function(err) {
-    console.error(`error: ${err}`)
-  })
+//for (let i = startNumber; i < (startNumber + userLength); i++) {
+for (let i = 0; i < userLength; i++) {
+  console.log("------------------------------------------------")
+  console.log(`i=${i}, startNumber=${startNumber}, userLength=${userLength}`)
+  console.log("------------------------------------------------")
+  const user = users[i]
+  const id = i - startNumber + 1
+  invoke
+    .exec(user)
+    .then(function(res) {
+      console.log(`success: ${res}`)
+      fs.appendFileSync(resultFile, `${id} success ${JSON.stringify(res)}\n`)
+    })
+    .catch(function(err) {
+      console.error(`error: ${err}`)
+      fs.appendFileSync(resultFile, `${id} error ${JSON.stringify(err)}\n`)
+    })
+}

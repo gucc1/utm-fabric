@@ -1,7 +1,7 @@
 const fs = require('fs')
 
 const startTime = Math.floor(Date.now() / 1000)
-const numOfUsers=100001
+const numOfUsers= parseInt(process.argv[2], 10) || 0
 const routeLength=100
 
 let plans = []
@@ -13,7 +13,7 @@ for (let user = 0; user <= numOfUsers; user++) {
 	let flightTime = startTime
   for(let point=0; point < routeLength; point++){
 		plan.flightPlan.push({
-			time: startTime,
+			time: startTime.toString(),
 			area: user.toString().padStart(7,`0`) + point.toString().padStart(7, `0`)
 		})
 		flightTime++
@@ -21,4 +21,4 @@ for (let user = 0; user <= numOfUsers; user++) {
 	plans.push(plan)
 }
 
-fs.writeFileSync('data/test.users.json', JSON.stringify(plans))
+fs.writeFileSync(`data/users${numOfUsers}.json`, JSON.stringify(plans))

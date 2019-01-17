@@ -66,6 +66,7 @@ var tx_id = null
 let pstartTime, pendTime
 
 var invoke = function(args) {
+  //console.log(args)
   return new Promise(function(resolve, reject) {
     // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
     Fabric_Client.newDefaultKeyValueStore({ path: store_path })
@@ -124,6 +125,9 @@ var invoke = function(args) {
         var proposalResponses = results[0]
         var proposal = results[1]
         let isProposalGood = false
+				//console.log("--------------------------")
+				//console.log(proposalResponses)
+				//console.log("--------------------------")
         if (
           proposalResponses &&
           proposalResponses[0].response &&
@@ -155,7 +159,7 @@ var invoke = function(args) {
           var transaction_id_string = tx_id.getTransactionID() //Get the transaction ID string to be used by the event processing
           var promises = []
 
-          var sendPromise = channel.sendTransaction(request)
+          var sendPromise = channel.sendTransaction(request, 9999999)
           promises.push(sendPromise) //we want the send transaction first, so that we know where to check status
 
           // get an eventhub once the fabric client has a user assigned. The user
