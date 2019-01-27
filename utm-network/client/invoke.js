@@ -18,8 +18,22 @@ const { performance } = require('perf_hooks')
 //
 var fabric_client = new Fabric_Client()
 
+fabric_client.setConfigSetting('initialize-with-discovery', true);
+
 // setup the fabric network
 var channel = fabric_client.newChannel('mychannel')
+
+async function initChannel(){
+	try{
+		await channel.initialize({discover: true, asLocalhost: true})
+		console.log(channel.getChannel())
+	}catch(e){
+		console.error(e)
+	}
+}
+
+initChannel()
+
 
 var peer1 = fabric_client.newPeer('grpc://localhost:7051', {
   name: 'peer1'
@@ -99,16 +113,16 @@ var invoke = function(args) {
         // changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
         // must send the proposal to endorsing peers
         var request = {
-          targets: [
+          /* targets: [
             'peer1',
             'peer2',
             'peer3',
             'peer4',
-            'peer5',
+           	'peer5',
             'peer6',
             'peer7',
-            'peer8'
-          ],
+            'peer8' 
+          ],*/
           chaincodeId: 'mycc',
           fcn: 'registerPlan',
           args: [args.name, JSON.stringify(args.flightPlan)],
@@ -125,9 +139,9 @@ var invoke = function(args) {
         var proposalResponses = results[0]
         var proposal = results[1]
         let isProposalGood = false
-				//console.log("--------------------------")
-				//console.log(proposalResponses)
-				//console.log("--------------------------")
+				console.log("--------------------------")
+				console.log(proposalResponses)
+				console.log("--------------------------")
         if (
           proposalResponses &&
           proposalResponses[0].response &&

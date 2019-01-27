@@ -507,7 +507,8 @@ Profiles:
                     - *Org5
                     - *Org6
                     - *Org7
-                    - *Org8
+                   # - *Org8
+                    -	*Org8
     TwoOrgsChannel:
         Consortium: SampleConsortium
         Application:

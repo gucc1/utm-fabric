@@ -31,7 +31,7 @@
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=false
-MAX_ORG=8
+MAX_ORG=4
 
 # Print the usage message
 function printHelp() {
@@ -283,45 +283,6 @@ function replacePrivateKey() {
     cd "$CURRENT_DIR"
     sed $OPTS "s/CA${i}_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
   done
-  # cd crypto-config/peerOrganizations/org1.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org2.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org3.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA3_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org4.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA4_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org5.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA5_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org6.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA6_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org7.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA7_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org8.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA8_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
 
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then

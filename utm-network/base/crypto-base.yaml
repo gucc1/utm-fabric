@@ -1,0 +1,7 @@
+  - Name: OrgNUM_OF_ORG
+    Domain: orgNUM_OF_ORG.example.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+    Users:
+      Count: 1

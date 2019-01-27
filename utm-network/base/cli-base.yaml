@@ -1,0 +1,8 @@
+  peer0.orgNUM_OF_ORG.example.com:
+     container_name: peer0.orgNUM_OF_ORG.example.com
+     extends:
+       file: base/docker-compose-base.yaml
+       service: peer0.orgNUM_OF_ORG.example.com
+     networks:
+       - byfn
+

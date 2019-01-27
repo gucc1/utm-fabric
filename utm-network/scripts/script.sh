@@ -22,7 +22,7 @@ VERBOSE="$5"
 LANGUAGE=`echo "$LANGUAGE" | tr [:upper:] [:lower:]`
 COUNTER=1
 MAX_RETRY=10
-MAX_ORG=8
+MAX_ORG=4
 CORE_PEER_TLS_ENABLED=false
 
 CC_SRC_PATH="github.com/chaincode/utm/"
