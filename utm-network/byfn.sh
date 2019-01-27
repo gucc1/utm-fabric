@@ -31,7 +31,7 @@
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=false
-MAX_ORG=4
+MAX_ORG=100
 
 # Print the usage message
 function printHelp() {

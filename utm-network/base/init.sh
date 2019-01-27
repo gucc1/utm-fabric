@@ -17,6 +17,6 @@ for((i=1;i<=$NUM_OF_ORG;i++));do
   TEMP=$(sed -e "s/NUM_OF_ORG/${i}/g" cli-base.yaml)
   echo "$TEMP" >> cli-test.yaml
 	echo "peer0.org${i}.example.com" >> volume.txt
-	echo "-	*Org${i}" >> org.txt
+	echo "- *Org${i}" >> org.txt
 done
 
