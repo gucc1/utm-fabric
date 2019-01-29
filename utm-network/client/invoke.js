@@ -18,11 +18,12 @@ const { performance } = require('perf_hooks')
 //
 var fabric_client = new Fabric_Client()
 
-fabric_client.setConfigSetting('initialize-with-discovery', true);
+// fabric_client.setConfigSetting('initialize-with-discovery', true);
 
 // setup the fabric network
 var channel = fabric_client.newChannel('mychannel')
 
+/*
 async function initChannel(){
 	try{
 		await channel.initialize({discover: true, asLocalhost: true})
@@ -33,40 +34,24 @@ async function initChannel(){
 }
 
 initChannel()
+*/
+let targets = []
+for(let i=1;i<=2;i++){
+	let peerName=`peer${i}`
+	channel.addPeer(
+		fabric_client.newPeer(`grpc:\/\/localhost:${i+70}51`, {
+			name: peerName
+		})
+	)
+	targets.push(peerName)
+}
 
-
+/*
 var peer1 = fabric_client.newPeer('grpc://localhost:7051', {
   name: 'peer1'
 })
 channel.addPeer(peer1)
-var peer2 = fabric_client.newPeer('grpc://localhost:8051', {
-  name: 'peer2'
-})
-channel.addPeer(peer2)
-var peer3 = fabric_client.newPeer('grpc://localhost:9051', {
-  name: 'peer3'
-})
-channel.addPeer(peer3)
-var peer4 = fabric_client.newPeer('grpc://localhost:10051', {
-  name: 'peer4'
-})
-channel.addPeer(peer4)
-var peer5 = fabric_client.newPeer('grpc://localhost:11051', {
-  name: 'peer5'
-})
-channel.addPeer(peer5)
-var peer6 = fabric_client.newPeer('grpc://localhost:12051', {
-  name: 'peer6'
-})
-channel.addPeer(peer6)
-var peer7 = fabric_client.newPeer('grpc://localhost:13051', {
-  name: 'peer7'
-})
-channel.addPeer(peer7)
-var peer8 = fabric_client.newPeer('grpc://localhost:14051', {
-  name: 'peer8'
-})
-channel.addPeer(peer8)
+*/
 
 var order = fabric_client.newOrderer('grpc://localhost:7050')
 channel.addOrderer(order)
@@ -113,16 +98,7 @@ var invoke = function(args) {
         // changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
         // must send the proposal to endorsing peers
         var request = {
-          /* targets: [
-            'peer1',
-            'peer2',
-            'peer3',
-            'peer4',
-           	'peer5',
-            'peer6',
-            'peer7',
-            'peer8' 
-          ],*/
+          targets: targets,
           chaincodeId: 'mycc',
           fcn: 'registerPlan',
           args: [args.name, JSON.stringify(args.flightPlan)],
@@ -135,7 +111,6 @@ var invoke = function(args) {
         return channel.sendTransactionProposal(request, 9999999)
       })
       .then(results => {
-        pendTime = performance.now()
         var proposalResponses = results[0]
         var proposal = results[1]
         let isProposalGood = false
@@ -178,7 +153,7 @@ var invoke = function(args) {
 
           // get an eventhub once the fabric client has a user assigned. The user
           // is required bacause the event registration must be signed
-          let event_hub = channel.newChannelEventHub(peer1)
+          let event_hub = channel.newChannelEventHub(targets[0])
 
           // using resolve the promise so that result status may be processed
           // under the then clause rather than having the catch clause process
@@ -192,6 +167,7 @@ var invoke = function(args) {
             event_hub.registerTxEvent(
               transaction_id_string,
               (tx, code) => {
+                pendTime = performance.now()
                 // this is the callback for transaction event status
                 // first some clean up of event listener
                 clearTimeout(handle)
@@ -260,6 +236,7 @@ var invoke = function(args) {
           )
           reject(pendTime - pstartTime)
         }
+				reject(pendTime - pstartTime)
       })
       .catch(err => {
         console.error('Failed to invoke successfully :: ' + err)

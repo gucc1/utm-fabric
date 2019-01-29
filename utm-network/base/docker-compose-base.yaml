@@ -9,6 +9,7 @@ services:
   orderer.example.com:
     container_name: orderer.example.com
     image: hyperledger/fabric-orderer:$IMAGE_TAG
+    dns_search: example.com
     environment:
       #- ORDERER_GENERAL_LOGLEVEL=INFO
       - ORDERER_GENERAL_LOGLEVEL=DEBUG
@@ -23,6 +24,12 @@ services:
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_KEEPALIVE_SERVERTIMEOUT=100s
+      - ORDERER_KAFKA_RETRY_NETWORKTIMEOUTS_DIALTIMEOUT=30s
+      - ORDERER_KAFKA_RETRY_NETWORKTIMEOUTS_READTIMEOUT=30s
+      - ORDERER_KAFKA_RETRY_NETWORKTIMEOUTS_WRITETIMEOUT=30s
+      - ORDERER_KAFKA_RETRY_METADATA_RETRYMAX=10
+      - ORDERER_KAFKA_RETRY_PRODUCER_RETRYMAX=10
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
     volumes:
@@ -48,8 +55,8 @@ services:
       - ../crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org1.example.com:/var/hyperledger/production
     ports:
-      - 100151:7051
-      - 100153:7053
+      - 7151:7051
+      - 7153:7053
   peer0.org2.example.com:
     container_name: peer0.org2.example.com
     extends:
@@ -66,8 +73,8 @@ services:
       - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org2.example.com:/var/hyperledger/production
     ports:
-      - 100251:7051
-      - 100253:7053
+      - 7251:7051
+      - 7253:7053
   peer0.org3.example.com:
     container_name: peer0.org3.example.com
     extends:
@@ -84,8 +91,8 @@ services:
       - ../crypto-config/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org3.example.com:/var/hyperledger/production
     ports:
-      - 100351:7051
-      - 100353:7053
+      - 7351:7051
+      - 7353:7053
   peer0.org4.example.com:
     container_name: peer0.org4.example.com
     extends:
@@ -102,8 +109,8 @@ services:
       - ../crypto-config/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org4.example.com:/var/hyperledger/production
     ports:
-      - 100451:7051
-      - 100453:7053
+      - 7451:7051
+      - 7453:7053
   peer0.org5.example.com:
     container_name: peer0.org5.example.com
     extends:
@@ -120,8 +127,8 @@ services:
       - ../crypto-config/peerOrganizations/org5.example.com/peers/peer0.org5.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org5.example.com:/var/hyperledger/production
     ports:
-      - 100551:7051
-      - 100553:7053
+      - 7551:7051
+      - 7553:7053
   peer0.org6.example.com:
     container_name: peer0.org6.example.com
     extends:
@@ -138,8 +145,8 @@ services:
       - ../crypto-config/peerOrganizations/org6.example.com/peers/peer0.org6.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org6.example.com:/var/hyperledger/production
     ports:
-      - 100651:7051
-      - 100653:7053
+      - 7651:7051
+      - 7653:7053
   peer0.org7.example.com:
     container_name: peer0.org7.example.com
     extends:
@@ -156,8 +163,8 @@ services:
       - ../crypto-config/peerOrganizations/org7.example.com/peers/peer0.org7.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org7.example.com:/var/hyperledger/production
     ports:
-      - 100751:7051
-      - 100753:7053
+      - 7751:7051
+      - 7753:7053
   peer0.org8.example.com:
     container_name: peer0.org8.example.com
     extends:
@@ -174,8 +181,8 @@ services:
       - ../crypto-config/peerOrganizations/org8.example.com/peers/peer0.org8.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org8.example.com:/var/hyperledger/production
     ports:
-      - 100851:7051
-      - 100853:7053
+      - 7851:7051
+      - 7853:7053
   peer0.org9.example.com:
     container_name: peer0.org9.example.com
     extends:
@@ -192,8 +199,8 @@ services:
       - ../crypto-config/peerOrganizations/org9.example.com/peers/peer0.org9.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org9.example.com:/var/hyperledger/production
     ports:
-      - 100951:7051
-      - 100953:7053
+      - 7951:7051
+      - 7953:7053
   peer0.org10.example.com:
     container_name: peer0.org10.example.com
     extends:
@@ -210,8 +217,8 @@ services:
       - ../crypto-config/peerOrganizations/org10.example.com/peers/peer0.org10.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org10.example.com:/var/hyperledger/production
     ports:
-      - 101051:7051
-      - 101053:7053
+      - 8051:7051
+      - 8053:7053
   peer0.org11.example.com:
     container_name: peer0.org11.example.com
     extends:
@@ -228,8 +235,8 @@ services:
       - ../crypto-config/peerOrganizations/org11.example.com/peers/peer0.org11.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org11.example.com:/var/hyperledger/production
     ports:
-      - 101151:7051
-      - 101153:7053
+      - 8151:7051
+      - 8153:7053
   peer0.org12.example.com:
     container_name: peer0.org12.example.com
     extends:
@@ -246,8 +253,8 @@ services:
       - ../crypto-config/peerOrganizations/org12.example.com/peers/peer0.org12.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org12.example.com:/var/hyperledger/production
     ports:
-      - 101251:7051
-      - 101253:7053
+      - 8251:7051
+      - 8253:7053
   peer0.org13.example.com:
     container_name: peer0.org13.example.com
     extends:
@@ -264,8 +271,8 @@ services:
       - ../crypto-config/peerOrganizations/org13.example.com/peers/peer0.org13.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org13.example.com:/var/hyperledger/production
     ports:
-      - 101351:7051
-      - 101353:7053
+      - 8351:7051
+      - 8353:7053
   peer0.org14.example.com:
     container_name: peer0.org14.example.com
     extends:
@@ -282,8 +289,8 @@ services:
       - ../crypto-config/peerOrganizations/org14.example.com/peers/peer0.org14.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org14.example.com:/var/hyperledger/production
     ports:
-      - 101451:7051
-      - 101453:7053
+      - 8451:7051
+      - 8453:7053
   peer0.org15.example.com:
     container_name: peer0.org15.example.com
     extends:
@@ -300,8 +307,8 @@ services:
       - ../crypto-config/peerOrganizations/org15.example.com/peers/peer0.org15.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org15.example.com:/var/hyperledger/production
     ports:
-      - 101551:7051
-      - 101553:7053
+      - 8551:7051
+      - 8553:7053
   peer0.org16.example.com:
     container_name: peer0.org16.example.com
     extends:
@@ -318,8 +325,8 @@ services:
       - ../crypto-config/peerOrganizations/org16.example.com/peers/peer0.org16.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org16.example.com:/var/hyperledger/production
     ports:
-      - 101651:7051
-      - 101653:7053
+      - 8651:7051
+      - 8653:7053
   peer0.org17.example.com:
     container_name: peer0.org17.example.com
     extends:
@@ -336,8 +343,8 @@ services:
       - ../crypto-config/peerOrganizations/org17.example.com/peers/peer0.org17.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org17.example.com:/var/hyperledger/production
     ports:
-      - 101751:7051
-      - 101753:7053
+      - 8751:7051
+      - 8753:7053
   peer0.org18.example.com:
     container_name: peer0.org18.example.com
     extends:
@@ -354,8 +361,8 @@ services:
       - ../crypto-config/peerOrganizations/org18.example.com/peers/peer0.org18.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org18.example.com:/var/hyperledger/production
     ports:
-      - 101851:7051
-      - 101853:7053
+      - 8851:7051
+      - 8853:7053
   peer0.org19.example.com:
     container_name: peer0.org19.example.com
     extends:
@@ -372,8 +379,8 @@ services:
       - ../crypto-config/peerOrganizations/org19.example.com/peers/peer0.org19.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org19.example.com:/var/hyperledger/production
     ports:
-      - 101951:7051
-      - 101953:7053
+      - 8951:7051
+      - 8953:7053
   peer0.org20.example.com:
     container_name: peer0.org20.example.com
     extends:
@@ -390,8 +397,8 @@ services:
       - ../crypto-config/peerOrganizations/org20.example.com/peers/peer0.org20.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org20.example.com:/var/hyperledger/production
     ports:
-      - 102051:7051
-      - 102053:7053
+      - 9051:7051
+      - 9053:7053
   peer0.org21.example.com:
     container_name: peer0.org21.example.com
     extends:
@@ -408,8 +415,8 @@ services:
       - ../crypto-config/peerOrganizations/org21.example.com/peers/peer0.org21.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org21.example.com:/var/hyperledger/production
     ports:
-      - 102151:7051
-      - 102153:7053
+      - 9151:7051
+      - 9153:7053
   peer0.org22.example.com:
     container_name: peer0.org22.example.com
     extends:
@@ -426,8 +433,8 @@ services:
       - ../crypto-config/peerOrganizations/org22.example.com/peers/peer0.org22.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org22.example.com:/var/hyperledger/production
     ports:
-      - 102251:7051
-      - 102253:7053
+      - 9251:7051
+      - 9253:7053
   peer0.org23.example.com:
     container_name: peer0.org23.example.com
     extends:
@@ -444,8 +451,8 @@ services:
       - ../crypto-config/peerOrganizations/org23.example.com/peers/peer0.org23.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org23.example.com:/var/hyperledger/production
     ports:
-      - 102351:7051
-      - 102353:7053
+      - 9351:7051
+      - 9353:7053
   peer0.org24.example.com:
     container_name: peer0.org24.example.com
     extends:
@@ -462,8 +469,8 @@ services:
       - ../crypto-config/peerOrganizations/org24.example.com/peers/peer0.org24.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org24.example.com:/var/hyperledger/production
     ports:
-      - 102451:7051
-      - 102453:7053
+      - 9451:7051
+      - 9453:7053
   peer0.org25.example.com:
     container_name: peer0.org25.example.com
     extends:
@@ -480,8 +487,8 @@ services:
       - ../crypto-config/peerOrganizations/org25.example.com/peers/peer0.org25.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org25.example.com:/var/hyperledger/production
     ports:
-      - 102551:7051
-      - 102553:7053
+      - 9551:7051
+      - 9553:7053
   peer0.org26.example.com:
     container_name: peer0.org26.example.com
     extends:
@@ -498,8 +505,8 @@ services:
       - ../crypto-config/peerOrganizations/org26.example.com/peers/peer0.org26.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org26.example.com:/var/hyperledger/production
     ports:
-      - 102651:7051
-      - 102653:7053
+      - 9651:7051
+      - 9653:7053
   peer0.org27.example.com:
     container_name: peer0.org27.example.com
     extends:
@@ -516,8 +523,8 @@ services:
       - ../crypto-config/peerOrganizations/org27.example.com/peers/peer0.org27.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org27.example.com:/var/hyperledger/production
     ports:
-      - 102751:7051
-      - 102753:7053
+      - 9751:7051
+      - 9753:7053
   peer0.org28.example.com:
     container_name: peer0.org28.example.com
     extends:
@@ -534,8 +541,8 @@ services:
       - ../crypto-config/peerOrganizations/org28.example.com/peers/peer0.org28.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org28.example.com:/var/hyperledger/production
     ports:
-      - 102851:7051
-      - 102853:7053
+      - 9851:7051
+      - 9853:7053
   peer0.org29.example.com:
     container_name: peer0.org29.example.com
     extends:
@@ -552,8 +559,8 @@ services:
       - ../crypto-config/peerOrganizations/org29.example.com/peers/peer0.org29.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org29.example.com:/var/hyperledger/production
     ports:
-      - 102951:7051
-      - 102953:7053
+      - 9951:7051
+      - 9953:7053
   peer0.org30.example.com:
     container_name: peer0.org30.example.com
     extends:
@@ -570,8 +577,8 @@ services:
       - ../crypto-config/peerOrganizations/org30.example.com/peers/peer0.org30.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org30.example.com:/var/hyperledger/production
     ports:
-      - 103051:7051
-      - 103053:7053
+      - 10051:7051
+      - 10053:7053
   peer0.org31.example.com:
     container_name: peer0.org31.example.com
     extends:
@@ -588,8 +595,8 @@ services:
       - ../crypto-config/peerOrganizations/org31.example.com/peers/peer0.org31.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org31.example.com:/var/hyperledger/production
     ports:
-      - 103151:7051
-      - 103153:7053
+      - 10151:7051
+      - 10153:7053
   peer0.org32.example.com:
     container_name: peer0.org32.example.com
     extends:
@@ -606,8 +613,8 @@ services:
       - ../crypto-config/peerOrganizations/org32.example.com/peers/peer0.org32.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org32.example.com:/var/hyperledger/production
     ports:
-      - 103251:7051
-      - 103253:7053
+      - 10251:7051
+      - 10253:7053
   peer0.org33.example.com:
     container_name: peer0.org33.example.com
     extends:
@@ -624,8 +631,8 @@ services:
       - ../crypto-config/peerOrganizations/org33.example.com/peers/peer0.org33.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org33.example.com:/var/hyperledger/production
     ports:
-      - 103351:7051
-      - 103353:7053
+      - 10351:7051
+      - 10353:7053
   peer0.org34.example.com:
     container_name: peer0.org34.example.com
     extends:
@@ -642,8 +649,8 @@ services:
       - ../crypto-config/peerOrganizations/org34.example.com/peers/peer0.org34.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org34.example.com:/var/hyperledger/production
     ports:
-      - 103451:7051
-      - 103453:7053
+      - 10451:7051
+      - 10453:7053
   peer0.org35.example.com:
     container_name: peer0.org35.example.com
     extends:
@@ -660,8 +667,8 @@ services:
       - ../crypto-config/peerOrganizations/org35.example.com/peers/peer0.org35.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org35.example.com:/var/hyperledger/production
     ports:
-      - 103551:7051
-      - 103553:7053
+      - 10551:7051
+      - 10553:7053
   peer0.org36.example.com:
     container_name: peer0.org36.example.com
     extends:
@@ -678,8 +685,8 @@ services:
       - ../crypto-config/peerOrganizations/org36.example.com/peers/peer0.org36.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org36.example.com:/var/hyperledger/production
     ports:
-      - 103651:7051
-      - 103653:7053
+      - 10651:7051
+      - 10653:7053
   peer0.org37.example.com:
     container_name: peer0.org37.example.com
     extends:
@@ -696,8 +703,8 @@ services:
       - ../crypto-config/peerOrganizations/org37.example.com/peers/peer0.org37.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org37.example.com:/var/hyperledger/production
     ports:
-      - 103751:7051
-      - 103753:7053
+      - 10751:7051
+      - 10753:7053
   peer0.org38.example.com:
     container_name: peer0.org38.example.com
     extends:
@@ -714,8 +721,8 @@ services:
       - ../crypto-config/peerOrganizations/org38.example.com/peers/peer0.org38.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org38.example.com:/var/hyperledger/production
     ports:
-      - 103851:7051
-      - 103853:7053
+      - 10851:7051
+      - 10853:7053
   peer0.org39.example.com:
     container_name: peer0.org39.example.com
     extends:
@@ -732,8 +739,8 @@ services:
       - ../crypto-config/peerOrganizations/org39.example.com/peers/peer0.org39.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org39.example.com:/var/hyperledger/production
     ports:
-      - 103951:7051
-      - 103953:7053
+      - 10951:7051
+      - 10953:7053
   peer0.org40.example.com:
     container_name: peer0.org40.example.com
     extends:
@@ -750,8 +757,8 @@ services:
       - ../crypto-config/peerOrganizations/org40.example.com/peers/peer0.org40.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org40.example.com:/var/hyperledger/production
     ports:
-      - 104051:7051
-      - 104053:7053
+      - 11051:7051
+      - 11053:7053
   peer0.org41.example.com:
     container_name: peer0.org41.example.com
     extends:
@@ -768,8 +775,8 @@ services:
       - ../crypto-config/peerOrganizations/org41.example.com/peers/peer0.org41.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org41.example.com:/var/hyperledger/production
     ports:
-      - 104151:7051
-      - 104153:7053
+      - 11151:7051
+      - 11153:7053
   peer0.org42.example.com:
     container_name: peer0.org42.example.com
     extends:
@@ -786,8 +793,8 @@ services:
       - ../crypto-config/peerOrganizations/org42.example.com/peers/peer0.org42.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org42.example.com:/var/hyperledger/production
     ports:
-      - 104251:7051
-      - 104253:7053
+      - 11251:7051
+      - 11253:7053
   peer0.org43.example.com:
     container_name: peer0.org43.example.com
     extends:
@@ -804,8 +811,8 @@ services:
       - ../crypto-config/peerOrganizations/org43.example.com/peers/peer0.org43.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org43.example.com:/var/hyperledger/production
     ports:
-      - 104351:7051
-      - 104353:7053
+      - 11351:7051
+      - 11353:7053
   peer0.org44.example.com:
     container_name: peer0.org44.example.com
     extends:
@@ -822,8 +829,8 @@ services:
       - ../crypto-config/peerOrganizations/org44.example.com/peers/peer0.org44.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org44.example.com:/var/hyperledger/production
     ports:
-      - 104451:7051
-      - 104453:7053
+      - 11451:7051
+      - 11453:7053
   peer0.org45.example.com:
     container_name: peer0.org45.example.com
     extends:
@@ -840,8 +847,8 @@ services:
       - ../crypto-config/peerOrganizations/org45.example.com/peers/peer0.org45.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org45.example.com:/var/hyperledger/production
     ports:
-      - 104551:7051
-      - 104553:7053
+      - 11551:7051
+      - 11553:7053
   peer0.org46.example.com:
     container_name: peer0.org46.example.com
     extends:
@@ -858,8 +865,8 @@ services:
       - ../crypto-config/peerOrganizations/org46.example.com/peers/peer0.org46.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org46.example.com:/var/hyperledger/production
     ports:
-      - 104651:7051
-      - 104653:7053
+      - 11651:7051
+      - 11653:7053
   peer0.org47.example.com:
     container_name: peer0.org47.example.com
     extends:
@@ -876,8 +883,8 @@ services:
       - ../crypto-config/peerOrganizations/org47.example.com/peers/peer0.org47.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org47.example.com:/var/hyperledger/production
     ports:
-      - 104751:7051
-      - 104753:7053
+      - 11751:7051
+      - 11753:7053
   peer0.org48.example.com:
     container_name: peer0.org48.example.com
     extends:
@@ -894,8 +901,8 @@ services:
       - ../crypto-config/peerOrganizations/org48.example.com/peers/peer0.org48.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org48.example.com:/var/hyperledger/production
     ports:
-      - 104851:7051
-      - 104853:7053
+      - 11851:7051
+      - 11853:7053
   peer0.org49.example.com:
     container_name: peer0.org49.example.com
     extends:
@@ -912,8 +919,8 @@ services:
       - ../crypto-config/peerOrganizations/org49.example.com/peers/peer0.org49.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org49.example.com:/var/hyperledger/production
     ports:
-      - 104951:7051
-      - 104953:7053
+      - 11951:7051
+      - 11953:7053
   peer0.org50.example.com:
     container_name: peer0.org50.example.com
     extends:
@@ -930,8 +937,8 @@ services:
       - ../crypto-config/peerOrganizations/org50.example.com/peers/peer0.org50.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org50.example.com:/var/hyperledger/production
     ports:
-      - 105051:7051
-      - 105053:7053
+      - 12051:7051
+      - 12053:7053
   peer0.org51.example.com:
     container_name: peer0.org51.example.com
     extends:
@@ -948,8 +955,8 @@ services:
       - ../crypto-config/peerOrganizations/org51.example.com/peers/peer0.org51.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org51.example.com:/var/hyperledger/production
     ports:
-      - 105151:7051
-      - 105153:7053
+      - 12151:7051
+      - 12153:7053
   peer0.org52.example.com:
     container_name: peer0.org52.example.com
     extends:
@@ -966,8 +973,8 @@ services:
       - ../crypto-config/peerOrganizations/org52.example.com/peers/peer0.org52.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org52.example.com:/var/hyperledger/production
     ports:
-      - 105251:7051
-      - 105253:7053
+      - 12251:7051
+      - 12253:7053
   peer0.org53.example.com:
     container_name: peer0.org53.example.com
     extends:
@@ -984,8 +991,8 @@ services:
       - ../crypto-config/peerOrganizations/org53.example.com/peers/peer0.org53.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org53.example.com:/var/hyperledger/production
     ports:
-      - 105351:7051
-      - 105353:7053
+      - 12351:7051
+      - 12353:7053
   peer0.org54.example.com:
     container_name: peer0.org54.example.com
     extends:
@@ -1002,8 +1009,8 @@ services:
       - ../crypto-config/peerOrganizations/org54.example.com/peers/peer0.org54.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org54.example.com:/var/hyperledger/production
     ports:
-      - 105451:7051
-      - 105453:7053
+      - 12451:7051
+      - 12453:7053
   peer0.org55.example.com:
     container_name: peer0.org55.example.com
     extends:
@@ -1020,8 +1027,8 @@ services:
       - ../crypto-config/peerOrganizations/org55.example.com/peers/peer0.org55.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org55.example.com:/var/hyperledger/production
     ports:
-      - 105551:7051
-      - 105553:7053
+      - 12551:7051
+      - 12553:7053
   peer0.org56.example.com:
     container_name: peer0.org56.example.com
     extends:
@@ -1038,8 +1045,8 @@ services:
       - ../crypto-config/peerOrganizations/org56.example.com/peers/peer0.org56.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org56.example.com:/var/hyperledger/production
     ports:
-      - 105651:7051
-      - 105653:7053
+      - 12651:7051
+      - 12653:7053
   peer0.org57.example.com:
     container_name: peer0.org57.example.com
     extends:
@@ -1056,8 +1063,8 @@ services:
       - ../crypto-config/peerOrganizations/org57.example.com/peers/peer0.org57.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org57.example.com:/var/hyperledger/production
     ports:
-      - 105751:7051
-      - 105753:7053
+      - 12751:7051
+      - 12753:7053
   peer0.org58.example.com:
     container_name: peer0.org58.example.com
     extends:
@@ -1074,8 +1081,8 @@ services:
       - ../crypto-config/peerOrganizations/org58.example.com/peers/peer0.org58.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org58.example.com:/var/hyperledger/production
     ports:
-      - 105851:7051
-      - 105853:7053
+      - 12851:7051
+      - 12853:7053
   peer0.org59.example.com:
     container_name: peer0.org59.example.com
     extends:
@@ -1092,8 +1099,8 @@ services:
       - ../crypto-config/peerOrganizations/org59.example.com/peers/peer0.org59.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org59.example.com:/var/hyperledger/production
     ports:
-      - 105951:7051
-      - 105953:7053
+      - 12951:7051
+      - 12953:7053
   peer0.org60.example.com:
     container_name: peer0.org60.example.com
     extends:
@@ -1110,8 +1117,8 @@ services:
       - ../crypto-config/peerOrganizations/org60.example.com/peers/peer0.org60.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org60.example.com:/var/hyperledger/production
     ports:
-      - 106051:7051
-      - 106053:7053
+      - 13051:7051
+      - 13053:7053
   peer0.org61.example.com:
     container_name: peer0.org61.example.com
     extends:
@@ -1128,8 +1135,8 @@ services:
       - ../crypto-config/peerOrganizations/org61.example.com/peers/peer0.org61.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org61.example.com:/var/hyperledger/production
     ports:
-      - 106151:7051
-      - 106153:7053
+      - 13151:7051
+      - 13153:7053
   peer0.org62.example.com:
     container_name: peer0.org62.example.com
     extends:
@@ -1146,8 +1153,8 @@ services:
       - ../crypto-config/peerOrganizations/org62.example.com/peers/peer0.org62.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org62.example.com:/var/hyperledger/production
     ports:
-      - 106251:7051
-      - 106253:7053
+      - 13251:7051
+      - 13253:7053
   peer0.org63.example.com:
     container_name: peer0.org63.example.com
     extends:
@@ -1164,8 +1171,8 @@ services:
       - ../crypto-config/peerOrganizations/org63.example.com/peers/peer0.org63.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org63.example.com:/var/hyperledger/production
     ports:
-      - 106351:7051
-      - 106353:7053
+      - 13351:7051
+      - 13353:7053
   peer0.org64.example.com:
     container_name: peer0.org64.example.com
     extends:
@@ -1182,8 +1189,8 @@ services:
       - ../crypto-config/peerOrganizations/org64.example.com/peers/peer0.org64.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org64.example.com:/var/hyperledger/production
     ports:
-      - 106451:7051
-      - 106453:7053
+      - 13451:7051
+      - 13453:7053
   peer0.org65.example.com:
     container_name: peer0.org65.example.com
     extends:
@@ -1200,8 +1207,8 @@ services:
       - ../crypto-config/peerOrganizations/org65.example.com/peers/peer0.org65.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org65.example.com:/var/hyperledger/production
     ports:
-      - 106551:7051
-      - 106553:7053
+      - 13551:7051
+      - 13553:7053
   peer0.org66.example.com:
     container_name: peer0.org66.example.com
     extends:
@@ -1218,8 +1225,8 @@ services:
       - ../crypto-config/peerOrganizations/org66.example.com/peers/peer0.org66.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org66.example.com:/var/hyperledger/production
     ports:
-      - 106651:7051
-      - 106653:7053
+      - 13651:7051
+      - 13653:7053
   peer0.org67.example.com:
     container_name: peer0.org67.example.com
     extends:
@@ -1236,8 +1243,8 @@ services:
       - ../crypto-config/peerOrganizations/org67.example.com/peers/peer0.org67.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org67.example.com:/var/hyperledger/production
     ports:
-      - 106751:7051
-      - 106753:7053
+      - 13751:7051
+      - 13753:7053
   peer0.org68.example.com:
     container_name: peer0.org68.example.com
     extends:
@@ -1254,8 +1261,8 @@ services:
       - ../crypto-config/peerOrganizations/org68.example.com/peers/peer0.org68.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org68.example.com:/var/hyperledger/production
     ports:
-      - 106851:7051
-      - 106853:7053
+      - 13851:7051
+      - 13853:7053
   peer0.org69.example.com:
     container_name: peer0.org69.example.com
     extends:
@@ -1272,8 +1279,8 @@ services:
       - ../crypto-config/peerOrganizations/org69.example.com/peers/peer0.org69.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org69.example.com:/var/hyperledger/production
     ports:
-      - 106951:7051
-      - 106953:7053
+      - 13951:7051
+      - 13953:7053
   peer0.org70.example.com:
     container_name: peer0.org70.example.com
     extends:
@@ -1290,8 +1297,8 @@ services:
       - ../crypto-config/peerOrganizations/org70.example.com/peers/peer0.org70.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org70.example.com:/var/hyperledger/production
     ports:
-      - 107051:7051
-      - 107053:7053
+      - 14051:7051
+      - 14053:7053
   peer0.org71.example.com:
     container_name: peer0.org71.example.com
     extends:
@@ -1308,8 +1315,8 @@ services:
       - ../crypto-config/peerOrganizations/org71.example.com/peers/peer0.org71.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org71.example.com:/var/hyperledger/production
     ports:
-      - 107151:7051
-      - 107153:7053
+      - 14151:7051
+      - 14153:7053
   peer0.org72.example.com:
     container_name: peer0.org72.example.com
     extends:
@@ -1326,8 +1333,8 @@ services:
       - ../crypto-config/peerOrganizations/org72.example.com/peers/peer0.org72.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org72.example.com:/var/hyperledger/production
     ports:
-      - 107251:7051
-      - 107253:7053
+      - 14251:7051
+      - 14253:7053
   peer0.org73.example.com:
     container_name: peer0.org73.example.com
     extends:
@@ -1344,8 +1351,8 @@ services:
       - ../crypto-config/peerOrganizations/org73.example.com/peers/peer0.org73.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org73.example.com:/var/hyperledger/production
     ports:
-      - 107351:7051
-      - 107353:7053
+      - 14351:7051
+      - 14353:7053
   peer0.org74.example.com:
     container_name: peer0.org74.example.com
     extends:
@@ -1362,8 +1369,8 @@ services:
       - ../crypto-config/peerOrganizations/org74.example.com/peers/peer0.org74.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org74.example.com:/var/hyperledger/production
     ports:
-      - 107451:7051
-      - 107453:7053
+      - 14451:7051
+      - 14453:7053
   peer0.org75.example.com:
     container_name: peer0.org75.example.com
     extends:
@@ -1380,8 +1387,8 @@ services:
       - ../crypto-config/peerOrganizations/org75.example.com/peers/peer0.org75.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org75.example.com:/var/hyperledger/production
     ports:
-      - 107551:7051
-      - 107553:7053
+      - 14551:7051
+      - 14553:7053
   peer0.org76.example.com:
     container_name: peer0.org76.example.com
     extends:
@@ -1398,8 +1405,8 @@ services:
       - ../crypto-config/peerOrganizations/org76.example.com/peers/peer0.org76.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org76.example.com:/var/hyperledger/production
     ports:
-      - 107651:7051
-      - 107653:7053
+      - 14651:7051
+      - 14653:7053
   peer0.org77.example.com:
     container_name: peer0.org77.example.com
     extends:
@@ -1416,8 +1423,8 @@ services:
       - ../crypto-config/peerOrganizations/org77.example.com/peers/peer0.org77.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org77.example.com:/var/hyperledger/production
     ports:
-      - 107751:7051
-      - 107753:7053
+      - 14751:7051
+      - 14753:7053
   peer0.org78.example.com:
     container_name: peer0.org78.example.com
     extends:
@@ -1434,8 +1441,8 @@ services:
       - ../crypto-config/peerOrganizations/org78.example.com/peers/peer0.org78.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org78.example.com:/var/hyperledger/production
     ports:
-      - 107851:7051
-      - 107853:7053
+      - 14851:7051
+      - 14853:7053
   peer0.org79.example.com:
     container_name: peer0.org79.example.com
     extends:
@@ -1452,8 +1459,8 @@ services:
       - ../crypto-config/peerOrganizations/org79.example.com/peers/peer0.org79.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org79.example.com:/var/hyperledger/production
     ports:
-      - 107951:7051
-      - 107953:7053
+      - 14951:7051
+      - 14953:7053
   peer0.org80.example.com:
     container_name: peer0.org80.example.com
     extends:
@@ -1470,8 +1477,8 @@ services:
       - ../crypto-config/peerOrganizations/org80.example.com/peers/peer0.org80.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org80.example.com:/var/hyperledger/production
     ports:
-      - 108051:7051
-      - 108053:7053
+      - 15051:7051
+      - 15053:7053
   peer0.org81.example.com:
     container_name: peer0.org81.example.com
     extends:
@@ -1488,8 +1495,8 @@ services:
       - ../crypto-config/peerOrganizations/org81.example.com/peers/peer0.org81.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org81.example.com:/var/hyperledger/production
     ports:
-      - 108151:7051
-      - 108153:7053
+      - 15151:7051
+      - 15153:7053
   peer0.org82.example.com:
     container_name: peer0.org82.example.com
     extends:
@@ -1506,8 +1513,8 @@ services:
       - ../crypto-config/peerOrganizations/org82.example.com/peers/peer0.org82.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org82.example.com:/var/hyperledger/production
     ports:
-      - 108251:7051
-      - 108253:7053
+      - 15251:7051
+      - 15253:7053
   peer0.org83.example.com:
     container_name: peer0.org83.example.com
     extends:
@@ -1524,8 +1531,8 @@ services:
       - ../crypto-config/peerOrganizations/org83.example.com/peers/peer0.org83.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org83.example.com:/var/hyperledger/production
     ports:
-      - 108351:7051
-      - 108353:7053
+      - 15351:7051
+      - 15353:7053
   peer0.org84.example.com:
     container_name: peer0.org84.example.com
     extends:
@@ -1542,8 +1549,8 @@ services:
       - ../crypto-config/peerOrganizations/org84.example.com/peers/peer0.org84.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org84.example.com:/var/hyperledger/production
     ports:
-      - 108451:7051
-      - 108453:7053
+      - 15451:7051
+      - 15453:7053
   peer0.org85.example.com:
     container_name: peer0.org85.example.com
     extends:
@@ -1560,8 +1567,8 @@ services:
       - ../crypto-config/peerOrganizations/org85.example.com/peers/peer0.org85.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org85.example.com:/var/hyperledger/production
     ports:
-      - 108551:7051
-      - 108553:7053
+      - 15551:7051
+      - 15553:7053
   peer0.org86.example.com:
     container_name: peer0.org86.example.com
     extends:
@@ -1578,8 +1585,8 @@ services:
       - ../crypto-config/peerOrganizations/org86.example.com/peers/peer0.org86.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org86.example.com:/var/hyperledger/production
     ports:
-      - 108651:7051
-      - 108653:7053
+      - 15651:7051
+      - 15653:7053
   peer0.org87.example.com:
     container_name: peer0.org87.example.com
     extends:
@@ -1596,8 +1603,8 @@ services:
       - ../crypto-config/peerOrganizations/org87.example.com/peers/peer0.org87.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org87.example.com:/var/hyperledger/production
     ports:
-      - 108751:7051
-      - 108753:7053
+      - 15751:7051
+      - 15753:7053
   peer0.org88.example.com:
     container_name: peer0.org88.example.com
     extends:
@@ -1614,8 +1621,8 @@ services:
       - ../crypto-config/peerOrganizations/org88.example.com/peers/peer0.org88.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org88.example.com:/var/hyperledger/production
     ports:
-      - 108851:7051
-      - 108853:7053
+      - 15851:7051
+      - 15853:7053
   peer0.org89.example.com:
     container_name: peer0.org89.example.com
     extends:
@@ -1632,8 +1639,8 @@ services:
       - ../crypto-config/peerOrganizations/org89.example.com/peers/peer0.org89.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org89.example.com:/var/hyperledger/production
     ports:
-      - 108951:7051
-      - 108953:7053
+      - 15951:7051
+      - 15953:7053
   peer0.org90.example.com:
     container_name: peer0.org90.example.com
     extends:
@@ -1650,8 +1657,8 @@ services:
       - ../crypto-config/peerOrganizations/org90.example.com/peers/peer0.org90.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org90.example.com:/var/hyperledger/production
     ports:
-      - 109051:7051
-      - 109053:7053
+      - 16051:7051
+      - 16053:7053
   peer0.org91.example.com:
     container_name: peer0.org91.example.com
     extends:
@@ -1668,8 +1675,8 @@ services:
       - ../crypto-config/peerOrganizations/org91.example.com/peers/peer0.org91.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org91.example.com:/var/hyperledger/production
     ports:
-      - 109151:7051
-      - 109153:7053
+      - 16151:7051
+      - 16153:7053
   peer0.org92.example.com:
     container_name: peer0.org92.example.com
     extends:
@@ -1686,8 +1693,8 @@ services:
       - ../crypto-config/peerOrganizations/org92.example.com/peers/peer0.org92.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org92.example.com:/var/hyperledger/production
     ports:
-      - 109251:7051
-      - 109253:7053
+      - 16251:7051
+      - 16253:7053
   peer0.org93.example.com:
     container_name: peer0.org93.example.com
     extends:
@@ -1704,8 +1711,8 @@ services:
       - ../crypto-config/peerOrganizations/org93.example.com/peers/peer0.org93.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org93.example.com:/var/hyperledger/production
     ports:
-      - 109351:7051
-      - 109353:7053
+      - 16351:7051
+      - 16353:7053
   peer0.org94.example.com:
     container_name: peer0.org94.example.com
     extends:
@@ -1722,8 +1729,8 @@ services:
       - ../crypto-config/peerOrganizations/org94.example.com/peers/peer0.org94.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org94.example.com:/var/hyperledger/production
     ports:
-      - 109451:7051
-      - 109453:7053
+      - 16451:7051
+      - 16453:7053
   peer0.org95.example.com:
     container_name: peer0.org95.example.com
     extends:
@@ -1740,8 +1747,8 @@ services:
       - ../crypto-config/peerOrganizations/org95.example.com/peers/peer0.org95.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org95.example.com:/var/hyperledger/production
     ports:
-      - 109551:7051
-      - 109553:7053
+      - 16551:7051
+      - 16553:7053
   peer0.org96.example.com:
     container_name: peer0.org96.example.com
     extends:
@@ -1758,8 +1765,8 @@ services:
       - ../crypto-config/peerOrganizations/org96.example.com/peers/peer0.org96.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org96.example.com:/var/hyperledger/production
     ports:
-      - 109651:7051
-      - 109653:7053
+      - 16651:7051
+      - 16653:7053
   peer0.org97.example.com:
     container_name: peer0.org97.example.com
     extends:
@@ -1776,8 +1783,8 @@ services:
       - ../crypto-config/peerOrganizations/org97.example.com/peers/peer0.org97.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org97.example.com:/var/hyperledger/production
     ports:
-      - 109751:7051
-      - 109753:7053
+      - 16751:7051
+      - 16753:7053
   peer0.org98.example.com:
     container_name: peer0.org98.example.com
     extends:
@@ -1794,8 +1801,8 @@ services:
       - ../crypto-config/peerOrganizations/org98.example.com/peers/peer0.org98.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org98.example.com:/var/hyperledger/production
     ports:
-      - 109851:7051
-      - 109853:7053
+      - 16851:7051
+      - 16853:7053
   peer0.org99.example.com:
     container_name: peer0.org99.example.com
     extends:
@@ -1812,8 +1819,8 @@ services:
       - ../crypto-config/peerOrganizations/org99.example.com/peers/peer0.org99.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org99.example.com:/var/hyperledger/production
     ports:
-      - 109951:7051
-      - 109953:7053
+      - 16951:7051
+      - 16953:7053
   peer0.org100.example.com:
     container_name: peer0.org100.example.com
     extends:
@@ -1830,5 +1837,5 @@ services:
       - ../crypto-config/peerOrganizations/org100.example.com/peers/peer0.org100.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org100.example.com:/var/hyperledger/production
     ports:
-      - 110051:7051
-      - 110053:7053
+      - 17051:7051
+      - 17053:7053
