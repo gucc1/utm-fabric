@@ -31,7 +31,6 @@
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=true
-MAX_ORG=2
 
 # Print the usage message
 function printHelp() {
@@ -273,7 +272,7 @@ function replacePrivateKey() {
 
   # Copy the template to the file that will be modified to add the private key
   # cp docker-compose-e2e-template.yaml docker-compose-e2e.yaml
-  cp docker-compose-cli-temp.yaml docker-compose-e2e.yaml
+  cp "./template/docker-compose-node${MAX_ORG}.yaml" docker-compose-e2e.yaml
 
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.
@@ -471,6 +470,8 @@ COMPOSE_FILE_ORG3=docker-compose-org3.yaml
 LANGUAGE=golang
 # default image tag
 IMAGETAG="latest"
+# number of org
+MAX_ORG=1
 # Parse commandline args
 if [ "$1" = "-m" ]; then # supports old usage, muscle memory is powerful!
   shift
@@ -493,7 +494,7 @@ else
   exit 1
 fi
 
-while getopts "h?c:t:d:f:s:l:i:v" opt; do
+while getopts "h?c:t:d:f:s:l:i:o:v" opt; do
   case "$opt" in
   h | \?)
     printHelp
@@ -518,13 +519,23 @@ while getopts "h?c:t:d:f:s:l:i:v" opt; do
     LANGUAGE=$OPTARG
     ;;
   i)
+		echo "imagetag"
     IMAGETAG=$(go env GOARCH)"-"$OPTARG
+		echo $OPTARG
     ;;
   v)
     VERBOSE=true
     ;;
+  o)
+		echo "org"
+    MAX_ORG=$OPTARG
+		echo $OPTARG
+    ;;
   esac
 done
+
+echo "MAX_ORG"
+echo $MAX_ORG
 
 
 # Announce what was requested
