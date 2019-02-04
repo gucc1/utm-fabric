@@ -9,12 +9,35 @@ volumes:
   orderer.example.com:
   peer0.org1.example.com:
   peer0.org2.example.com:
-  peer0.org3.example.com:
-  peer0.org4.example.com:
-  peer0.org5.example.com:
-  peer0.org6.example.com:
-  peer0.org7.example.com:
-  peer0.org8.example.com:
+#  peer0.org3.example.com:
+#  peer0.org4.example.com:
+#  peer0.org5.example.com:
+#  peer0.org6.example.com:
+#  peer0.org7.example.com:
+#  peer0.org8.example.com:
+#  peer0.org9.example.com:
+#  peer0.org10.example.com:
+#  peer0.org11.example.com:
+#  peer0.org12.example.com:
+#  peer0.org13.example.com:
+#  peer0.org14.example.com:
+#  peer0.org15.example.com:
+#  peer0.org16.example.com:
+#  peer0.org17.example.com:
+#  peer0.org18.example.com:
+#  peer0.org19.example.com:
+#  peer0.org20.example.com:
+#  peer0.org21.example.com:
+#  peer0.org22.example.com:
+#  peer0.org23.example.com:
+#  peer0.org24.example.com:
+#  peer0.org25.example.com:
+#  peer0.org26.example.com:
+#  peer0.org27.example.com:
+#  peer0.org28.example.com:
+#  peer0.org29.example.com:
+#  peer0.org30.example.com:
+#  peer0.org31.example.com:
 
 networks:
   byfn:
@@ -52,51 +75,213 @@ services:
     networks:
       - byfn
   peer0.org2.example.com:
-    container_name: peer0.org2.example.com
-    extends:
-      file: base/docker-compose-base.yaml
-      service: peer0.org2.example.com
-    networks:
-      - byfn
-  peer0.org3.example.com:
-    container_name: peer0.org3.example.com
-    extends:
-      file: base/docker-compose-base.yaml
-      service: peer0.org3.example.com
-    networks:
-      - byfn
-  peer0.org4.example.com:
-    container_name: peer0.org4.example.com
-    extends:
-      file: base/docker-compose-base.yaml
-      service: peer0.org4.example.com
-    networks:
-      - byfn
-  peer0.org5.example.com:
-    container_name: peer0.org5.example.com
-    extends:
-      file: base/docker-compose-base.yaml
-      service: peer0.org5.example.com
-    networks:
-      - byfn
-  peer0.org6.example.com:
-    container_name: peer0.org6.example.com
-    extends:
-      file: base/docker-compose-base.yaml
-      service: peer0.org6.example.com
-    networks:
-      - byfn
-  peer0.org7.example.com:
-    container_name: peer0.org7.example.com
-    extends:
-      file: base/docker-compose-base.yaml
-      service: peer0.org7.example.com
-    networks:
-      - byfn
-  peer0.org8.example.com:
-    container_name: peer0.org8.example.com
-    extends:
-      file: base/docker-compose-base.yaml
-      service: peer0.org8.example.com
-    networks:
-      - byfn
+     container_name: peer0.org2.example.com
+     extends:
+       file: base/docker-compose-base.yaml
+       service: peer0.org2.example.com
+     networks:
+       - byfn
+#  peer0.org3.example.com:
+#     container_name: peer0.org3.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org3.example.com
+#     networks:
+#       - byfn
+#  peer0.org4.example.com:
+#     container_name: peer0.org4.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org4.example.com
+#     networks:
+#       - byfn
+#  peer0.org5.example.com:
+#     container_name: peer0.org5.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org5.example.com
+#     networks:
+#       - byfn
+#  peer0.org6.example.com:
+#     container_name: peer0.org6.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org6.example.com
+#     networks:
+#       - byfn
+#  peer0.org7.example.com:
+#     container_name: peer0.org7.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org7.example.com
+#     networks:
+#       - byfn
+#  peer0.org8.example.com:
+#     container_name: peer0.org8.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org8.example.com
+#     networks:
+#       - byfn
+#  peer0.org9.example.com:
+#     container_name: peer0.org9.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org9.example.com
+#     networks:
+#       - byfn
+#  peer0.org10.example.com:
+#     container_name: peer0.org10.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org10.example.com
+#     networks:
+#       - byfn
+#  peer0.org11.example.com:
+#     container_name: peer0.org11.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org11.example.com
+#     networks:
+#       - byfn
+#  peer0.org12.example.com:
+#     container_name: peer0.org12.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org12.example.com
+#     networks:
+#       - byfn
+#  peer0.org13.example.com:
+#     container_name: peer0.org13.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org13.example.com
+#     networks:
+#       - byfn
+#  peer0.org14.example.com:
+#     container_name: peer0.org14.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org14.example.com
+#     networks:
+#       - byfn
+#  peer0.org15.example.com:
+#     container_name: peer0.org15.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org15.example.com
+#     networks:
+#       - byfn
+#  peer0.org16.example.com:
+#     container_name: peer0.org16.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org16.example.com
+#     networks:
+#       - byfn
+#  peer0.org17.example.com:
+#     container_name: peer0.org17.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org17.example.com
+#     networks:
+#       - byfn
+#  peer0.org18.example.com:
+#     container_name: peer0.org18.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org18.example.com
+#     networks:
+#       - byfn
+#  peer0.org19.example.com:
+#     container_name: peer0.org19.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org19.example.com
+#     networks:
+#       - byfn
+#  peer0.org20.example.com:
+#     container_name: peer0.org20.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org20.example.com
+#     networks:
+#       - byfn
+#  peer0.org21.example.com:
+#     container_name: peer0.org21.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org21.example.com
+#     networks:
+#       - byfn
+#  peer0.org22.example.com:
+#     container_name: peer0.org22.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org22.example.com
+#     networks:
+#       - byfn
+#  peer0.org23.example.com:
+#     container_name: peer0.org23.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org23.example.com
+#     networks:
+#       - byfn
+#  peer0.org24.example.com:
+#     container_name: peer0.org24.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org24.example.com
+#     networks:
+#       - byfn
+#  peer0.org25.example.com:
+#     container_name: peer0.org25.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org25.example.com
+#     networks:
+#       - byfn
+#  peer0.org26.example.com:
+#     container_name: peer0.org26.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org26.example.com
+#     networks:
+#       - byfn
+#  peer0.org27.example.com:
+#     container_name: peer0.org27.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org27.example.com
+#     networks:
+#       - byfn
+#  peer0.org28.example.com:
+#     container_name: peer0.org28.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org28.example.com
+#     networks:
+#       - byfn
+#  peer0.org29.example.com:
+#     container_name: peer0.org29.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org29.example.com
+#     networks:
+#       - byfn
+#  peer0.org30.example.com:
+#     container_name: peer0.org30.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org30.example.com
+#     networks:
+#       - byfn
+#  peer0.org31.example.com:
+#     container_name: peer0.org31.example.com
+#     extends:
+#       file: base/docker-compose-base.yaml
+#       service: peer0.org31.example.com
+#     networks:
+#       - byfn
+

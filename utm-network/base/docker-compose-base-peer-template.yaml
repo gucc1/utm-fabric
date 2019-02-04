@@ -1,0 +1,18 @@
+  peer0.orgNUM_OF_ORG.example.com:
+    container_name: peer0.orgNUM_OF_ORG.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.orgNUM_OF_ORG.example.com
+      - CORE_PEER_ADDRESS=peer0.orgNUM_OF_ORG.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.orgNUM_OF_ORG.example.com:7051
+      - CORE_PEER_LOCALMSPID=OrgNUM_OF_ORGMSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/orgNUM_OF_ORG.example.com/peers/peer0.orgNUM_OF_ORG.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/orgNUM_OF_ORG.example.com/peers/peer0.orgNUM_OF_ORG.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.orgNUM_OF_ORG.example.com:/var/hyperledger/production
+    ports:
+      - PORT51:7051
+      - PORT53:7053

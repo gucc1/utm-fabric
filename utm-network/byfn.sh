@@ -30,8 +30,7 @@
 # this may be commented out to resolve installed version of tools if desired
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
-export VERBOSE=false
-MAX_ORG=8
+export VERBOSE=true
 
 # Print the usage message
 function printHelp() {
@@ -166,7 +165,7 @@ function networkUp() {
     exit 1
   fi
   # now run the end to end script
-  docker exec cli scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE
+  docker exec cli scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT $VERBOSE $MAX_ORG
   if [ $? -ne 0 ]; then
     echo "ERROR !!!! Test failed"
     exit 1
@@ -272,7 +271,8 @@ function replacePrivateKey() {
   fi
 
   # Copy the template to the file that will be modified to add the private key
-  cp docker-compose-e2e-template.yaml docker-compose-e2e.yaml
+  # cp docker-compose-e2e-template.yaml docker-compose-e2e.yaml
+  cp "./template/docker-compose-node${MAX_ORG}.yaml" docker-compose-e2e.yaml
 
   # The next steps will replace the template's contents with the
   # actual values of the private key file names for the two CAs.
@@ -283,45 +283,6 @@ function replacePrivateKey() {
     cd "$CURRENT_DIR"
     sed $OPTS "s/CA${i}_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
   done
-  # cd crypto-config/peerOrganizations/org1.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org2.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org3.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA3_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org4.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA4_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org5.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA5_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org6.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA6_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org7.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA7_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
-
-  # cd crypto-config/peerOrganizations/org8.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA8_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
 
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
@@ -498,7 +459,8 @@ CLI_DELAY=3
 # channel name defaults to "mychannel"
 CHANNEL_NAME="mychannel"
 # use this as the default docker-compose yaml definition
-COMPOSE_FILE=docker-compose-cli.yaml
+#COMPOSE_FILE=docker-compose-cli.yaml
+COMPOSE_FILE=docker-compose-e2e.yaml
 #
 COMPOSE_FILE_COUCH=docker-compose-couch.yaml
 # org3 docker compose file
@@ -508,6 +470,8 @@ COMPOSE_FILE_ORG3=docker-compose-org3.yaml
 LANGUAGE=golang
 # default image tag
 IMAGETAG="latest"
+# number of org
+MAX_ORG=1
 # Parse commandline args
 if [ "$1" = "-m" ]; then # supports old usage, muscle memory is powerful!
   shift
@@ -530,7 +494,7 @@ else
   exit 1
 fi
 
-while getopts "h?c:t:d:f:s:l:i:v" opt; do
+while getopts "h?c:t:d:f:s:l:i:o:v" opt; do
   case "$opt" in
   h | \?)
     printHelp
@@ -555,13 +519,23 @@ while getopts "h?c:t:d:f:s:l:i:v" opt; do
     LANGUAGE=$OPTARG
     ;;
   i)
+		echo "imagetag"
     IMAGETAG=$(go env GOARCH)"-"$OPTARG
+		echo $OPTARG
     ;;
   v)
     VERBOSE=true
     ;;
+  o)
+		echo "org"
+    MAX_ORG=$OPTARG
+		echo $OPTARG
+    ;;
   esac
 done
+
+echo "MAX_ORG"
+echo $MAX_ORG
 
 
 # Announce what was requested

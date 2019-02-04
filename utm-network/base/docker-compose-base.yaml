@@ -9,18 +9,27 @@ services:
   orderer.example.com:
     container_name: orderer.example.com
     image: hyperledger/fabric-orderer:$IMAGE_TAG
+    dns_search: example.com
     environment:
-      - ORDERER_GENERAL_LOGLEVEL=INFO
+      #- ORDERER_GENERAL_LOGLEVEL=INFO
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_MAXWINDOWSIZE=10000
       # enabled TLS
       - ORDERER_GENERAL_TLS_ENABLED=false
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_KEEPALIVE_SERVERTIMEOUT=100s
+      - ORDERER_KAFKA_RETRY_NETWORKTIMEOUTS_DIALTIMEOUT=30s
+      - ORDERER_KAFKA_RETRY_NETWORKTIMEOUTS_READTIMEOUT=30s
+      - ORDERER_KAFKA_RETRY_NETWORKTIMEOUTS_WRITETIMEOUT=30s
+      - ORDERER_KAFKA_RETRY_METADATA_RETRYMAX=10
+      - ORDERER_KAFKA_RETRY_PRODUCER_RETRYMAX=10
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
     volumes:
@@ -30,7 +39,6 @@ services:
       - orderer.example.com:/var/hyperledger/production/orderer
     ports:
       - 7050:7050
-
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
     extends:
@@ -39,7 +47,6 @@ services:
     environment:
       - CORE_PEER_ID=peer0.org1.example.com
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
       - CORE_PEER_LOCALMSPID=Org1MSP
     volumes:
@@ -48,8 +55,8 @@ services:
       - ../crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org1.example.com:/var/hyperledger/production
     ports:
-      - 7051:7051
-      - 7053:7053
+      - 7151:7051
+      - 7153:7053
   peer0.org2.example.com:
     container_name: peer0.org2.example.com
     extends:
@@ -59,7 +66,6 @@ services:
       - CORE_PEER_ID=peer0.org2.example.com
       - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051
-      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.example.com:7051
       - CORE_PEER_LOCALMSPID=Org2MSP
     volumes:
       - /var/run/:/host/var/run/
@@ -67,8 +73,8 @@ services:
       - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org2.example.com:/var/hyperledger/production
     ports:
-      - 8051:7051
-      - 8053:7053
+      - 7251:7051
+      - 7253:7053
   peer0.org3.example.com:
     container_name: peer0.org3.example.com
     extends:
@@ -78,7 +84,6 @@ services:
       - CORE_PEER_ID=peer0.org3.example.com
       - CORE_PEER_ADDRESS=peer0.org3.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org3.example.com:7051
-      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org3.example.com:7051
       - CORE_PEER_LOCALMSPID=Org3MSP
     volumes:
       - /var/run/:/host/var/run/
@@ -86,8 +91,8 @@ services:
       - ../crypto-config/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org3.example.com:/var/hyperledger/production
     ports:
-      - 9051:7051
-      - 9053:7053
+      - 7351:7051
+      - 7353:7053
   peer0.org4.example.com:
     container_name: peer0.org4.example.com
     extends:
@@ -97,7 +102,6 @@ services:
       - CORE_PEER_ID=peer0.org4.example.com
       - CORE_PEER_ADDRESS=peer0.org4.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org4.example.com:7051
-      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org4.example.com:7051
       - CORE_PEER_LOCALMSPID=Org4MSP
     volumes:
       - /var/run/:/host/var/run/
@@ -105,8 +109,8 @@ services:
       - ../crypto-config/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org4.example.com:/var/hyperledger/production
     ports:
-      - 10051:7051
-      - 10053:7053
+      - 7451:7051
+      - 7453:7053
   peer0.org5.example.com:
     container_name: peer0.org5.example.com
     extends:
@@ -116,7 +120,6 @@ services:
       - CORE_PEER_ID=peer0.org5.example.com
       - CORE_PEER_ADDRESS=peer0.org5.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org5.example.com:7051
-      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org5.example.com:7051
       - CORE_PEER_LOCALMSPID=Org5MSP
     volumes:
       - /var/run/:/host/var/run/
@@ -124,8 +127,8 @@ services:
       - ../crypto-config/peerOrganizations/org5.example.com/peers/peer0.org5.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org5.example.com:/var/hyperledger/production
     ports:
-      - 11051:7051
-      - 11053:7053
+      - 7551:7051
+      - 7553:7053
   peer0.org6.example.com:
     container_name: peer0.org6.example.com
     extends:
@@ -135,7 +138,6 @@ services:
       - CORE_PEER_ID=peer0.org6.example.com
       - CORE_PEER_ADDRESS=peer0.org6.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org6.example.com:7051
-      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org6.example.com:7051
       - CORE_PEER_LOCALMSPID=Org6MSP
     volumes:
       - /var/run/:/host/var/run/
@@ -143,8 +145,8 @@ services:
       - ../crypto-config/peerOrganizations/org6.example.com/peers/peer0.org6.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org6.example.com:/var/hyperledger/production
     ports:
-      - 12051:7051
-      - 12053:7053
+      - 7651:7051
+      - 7653:7053
   peer0.org7.example.com:
     container_name: peer0.org7.example.com
     extends:
@@ -154,7 +156,6 @@ services:
       - CORE_PEER_ID=peer0.org7.example.com
       - CORE_PEER_ADDRESS=peer0.org7.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org7.example.com:7051
-      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org7.example.com:7051
       - CORE_PEER_LOCALMSPID=Org7MSP
     volumes:
       - /var/run/:/host/var/run/
@@ -162,8 +163,8 @@ services:
       - ../crypto-config/peerOrganizations/org7.example.com/peers/peer0.org7.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org7.example.com:/var/hyperledger/production
     ports:
-      - 13051:7051
-      - 13053:7053
+      - 7751:7051
+      - 7753:7053
   peer0.org8.example.com:
     container_name: peer0.org8.example.com
     extends:
@@ -173,7 +174,6 @@ services:
       - CORE_PEER_ID=peer0.org8.example.com
       - CORE_PEER_ADDRESS=peer0.org8.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org8.example.com:7051
-      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org8.example.com:7051
       - CORE_PEER_LOCALMSPID=Org8MSP
     volumes:
       - /var/run/:/host/var/run/
@@ -181,5 +181,1661 @@ services:
       - ../crypto-config/peerOrganizations/org8.example.com/peers/peer0.org8.example.com/tls:/etc/hyperledger/fabric/tls
       - peer0.org8.example.com:/var/hyperledger/production
     ports:
+      - 7851:7051
+      - 7853:7053
+  peer0.org9.example.com:
+    container_name: peer0.org9.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org9.example.com
+      - CORE_PEER_ADDRESS=peer0.org9.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org9.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org9MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org9.example.com/peers/peer0.org9.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org9.example.com/peers/peer0.org9.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org9.example.com:/var/hyperledger/production
+    ports:
+      - 7951:7051
+      - 7953:7053
+  peer0.org10.example.com:
+    container_name: peer0.org10.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org10.example.com
+      - CORE_PEER_ADDRESS=peer0.org10.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org10.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org10MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org10.example.com/peers/peer0.org10.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org10.example.com/peers/peer0.org10.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org10.example.com:/var/hyperledger/production
+    ports:
+      - 8051:7051
+      - 8053:7053
+  peer0.org11.example.com:
+    container_name: peer0.org11.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org11.example.com
+      - CORE_PEER_ADDRESS=peer0.org11.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org11.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org11MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org11.example.com/peers/peer0.org11.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org11.example.com/peers/peer0.org11.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org11.example.com:/var/hyperledger/production
+    ports:
+      - 8151:7051
+      - 8153:7053
+  peer0.org12.example.com:
+    container_name: peer0.org12.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org12.example.com
+      - CORE_PEER_ADDRESS=peer0.org12.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org12.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org12MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org12.example.com/peers/peer0.org12.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org12.example.com/peers/peer0.org12.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org12.example.com:/var/hyperledger/production
+    ports:
+      - 8251:7051
+      - 8253:7053
+  peer0.org13.example.com:
+    container_name: peer0.org13.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org13.example.com
+      - CORE_PEER_ADDRESS=peer0.org13.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org13.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org13MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org13.example.com/peers/peer0.org13.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org13.example.com/peers/peer0.org13.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org13.example.com:/var/hyperledger/production
+    ports:
+      - 8351:7051
+      - 8353:7053
+  peer0.org14.example.com:
+    container_name: peer0.org14.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org14.example.com
+      - CORE_PEER_ADDRESS=peer0.org14.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org14.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org14MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org14.example.com/peers/peer0.org14.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org14.example.com/peers/peer0.org14.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org14.example.com:/var/hyperledger/production
+    ports:
+      - 8451:7051
+      - 8453:7053
+  peer0.org15.example.com:
+    container_name: peer0.org15.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org15.example.com
+      - CORE_PEER_ADDRESS=peer0.org15.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org15.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org15MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org15.example.com/peers/peer0.org15.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org15.example.com/peers/peer0.org15.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org15.example.com:/var/hyperledger/production
+    ports:
+      - 8551:7051
+      - 8553:7053
+  peer0.org16.example.com:
+    container_name: peer0.org16.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org16.example.com
+      - CORE_PEER_ADDRESS=peer0.org16.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org16.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org16MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org16.example.com/peers/peer0.org16.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org16.example.com/peers/peer0.org16.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org16.example.com:/var/hyperledger/production
+    ports:
+      - 8651:7051
+      - 8653:7053
+  peer0.org17.example.com:
+    container_name: peer0.org17.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org17.example.com
+      - CORE_PEER_ADDRESS=peer0.org17.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org17.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org17MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org17.example.com/peers/peer0.org17.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org17.example.com/peers/peer0.org17.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org17.example.com:/var/hyperledger/production
+    ports:
+      - 8751:7051
+      - 8753:7053
+  peer0.org18.example.com:
+    container_name: peer0.org18.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org18.example.com
+      - CORE_PEER_ADDRESS=peer0.org18.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org18.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org18MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org18.example.com/peers/peer0.org18.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org18.example.com/peers/peer0.org18.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org18.example.com:/var/hyperledger/production
+    ports:
+      - 8851:7051
+      - 8853:7053
+  peer0.org19.example.com:
+    container_name: peer0.org19.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org19.example.com
+      - CORE_PEER_ADDRESS=peer0.org19.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org19.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org19MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org19.example.com/peers/peer0.org19.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org19.example.com/peers/peer0.org19.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org19.example.com:/var/hyperledger/production
+    ports:
+      - 8951:7051
+      - 8953:7053
+  peer0.org20.example.com:
+    container_name: peer0.org20.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org20.example.com
+      - CORE_PEER_ADDRESS=peer0.org20.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org20.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org20MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org20.example.com/peers/peer0.org20.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org20.example.com/peers/peer0.org20.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org20.example.com:/var/hyperledger/production
+    ports:
+      - 9051:7051
+      - 9053:7053
+  peer0.org21.example.com:
+    container_name: peer0.org21.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org21.example.com
+      - CORE_PEER_ADDRESS=peer0.org21.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org21.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org21MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org21.example.com/peers/peer0.org21.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org21.example.com/peers/peer0.org21.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org21.example.com:/var/hyperledger/production
+    ports:
+      - 9151:7051
+      - 9153:7053
+  peer0.org22.example.com:
+    container_name: peer0.org22.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org22.example.com
+      - CORE_PEER_ADDRESS=peer0.org22.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org22.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org22MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org22.example.com/peers/peer0.org22.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org22.example.com/peers/peer0.org22.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org22.example.com:/var/hyperledger/production
+    ports:
+      - 9251:7051
+      - 9253:7053
+  peer0.org23.example.com:
+    container_name: peer0.org23.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org23.example.com
+      - CORE_PEER_ADDRESS=peer0.org23.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org23.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org23MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org23.example.com/peers/peer0.org23.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org23.example.com/peers/peer0.org23.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org23.example.com:/var/hyperledger/production
+    ports:
+      - 9351:7051
+      - 9353:7053
+  peer0.org24.example.com:
+    container_name: peer0.org24.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org24.example.com
+      - CORE_PEER_ADDRESS=peer0.org24.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org24.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org24MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org24.example.com/peers/peer0.org24.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org24.example.com/peers/peer0.org24.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org24.example.com:/var/hyperledger/production
+    ports:
+      - 9451:7051
+      - 9453:7053
+  peer0.org25.example.com:
+    container_name: peer0.org25.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org25.example.com
+      - CORE_PEER_ADDRESS=peer0.org25.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org25.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org25MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org25.example.com/peers/peer0.org25.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org25.example.com/peers/peer0.org25.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org25.example.com:/var/hyperledger/production
+    ports:
+      - 9551:7051
+      - 9553:7053
+  peer0.org26.example.com:
+    container_name: peer0.org26.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org26.example.com
+      - CORE_PEER_ADDRESS=peer0.org26.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org26.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org26MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org26.example.com/peers/peer0.org26.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org26.example.com/peers/peer0.org26.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org26.example.com:/var/hyperledger/production
+    ports:
+      - 9651:7051
+      - 9653:7053
+  peer0.org27.example.com:
+    container_name: peer0.org27.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org27.example.com
+      - CORE_PEER_ADDRESS=peer0.org27.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org27.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org27MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org27.example.com/peers/peer0.org27.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org27.example.com/peers/peer0.org27.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org27.example.com:/var/hyperledger/production
+    ports:
+      - 9751:7051
+      - 9753:7053
+  peer0.org28.example.com:
+    container_name: peer0.org28.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org28.example.com
+      - CORE_PEER_ADDRESS=peer0.org28.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org28.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org28MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org28.example.com/peers/peer0.org28.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org28.example.com/peers/peer0.org28.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org28.example.com:/var/hyperledger/production
+    ports:
+      - 9851:7051
+      - 9853:7053
+  peer0.org29.example.com:
+    container_name: peer0.org29.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org29.example.com
+      - CORE_PEER_ADDRESS=peer0.org29.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org29.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org29MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org29.example.com/peers/peer0.org29.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org29.example.com/peers/peer0.org29.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org29.example.com:/var/hyperledger/production
+    ports:
+      - 9951:7051
+      - 9953:7053
+  peer0.org30.example.com:
+    container_name: peer0.org30.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org30.example.com
+      - CORE_PEER_ADDRESS=peer0.org30.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org30.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org30MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org30.example.com/peers/peer0.org30.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org30.example.com/peers/peer0.org30.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org30.example.com:/var/hyperledger/production
+    ports:
+      - 10051:7051
+      - 10053:7053
+  peer0.org31.example.com:
+    container_name: peer0.org31.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org31.example.com
+      - CORE_PEER_ADDRESS=peer0.org31.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org31.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org31MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org31.example.com/peers/peer0.org31.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org31.example.com/peers/peer0.org31.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org31.example.com:/var/hyperledger/production
+    ports:
+      - 10151:7051
+      - 10153:7053
+  peer0.org32.example.com:
+    container_name: peer0.org32.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org32.example.com
+      - CORE_PEER_ADDRESS=peer0.org32.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org32.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org32MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org32.example.com/peers/peer0.org32.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org32.example.com/peers/peer0.org32.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org32.example.com:/var/hyperledger/production
+    ports:
+      - 10251:7051
+      - 10253:7053
+  peer0.org33.example.com:
+    container_name: peer0.org33.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org33.example.com
+      - CORE_PEER_ADDRESS=peer0.org33.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org33.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org33MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org33.example.com/peers/peer0.org33.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org33.example.com/peers/peer0.org33.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org33.example.com:/var/hyperledger/production
+    ports:
+      - 10351:7051
+      - 10353:7053
+  peer0.org34.example.com:
+    container_name: peer0.org34.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org34.example.com
+      - CORE_PEER_ADDRESS=peer0.org34.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org34.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org34MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org34.example.com/peers/peer0.org34.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org34.example.com/peers/peer0.org34.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org34.example.com:/var/hyperledger/production
+    ports:
+      - 10451:7051
+      - 10453:7053
+  peer0.org35.example.com:
+    container_name: peer0.org35.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org35.example.com
+      - CORE_PEER_ADDRESS=peer0.org35.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org35.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org35MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org35.example.com/peers/peer0.org35.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org35.example.com/peers/peer0.org35.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org35.example.com:/var/hyperledger/production
+    ports:
+      - 10551:7051
+      - 10553:7053
+  peer0.org36.example.com:
+    container_name: peer0.org36.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org36.example.com
+      - CORE_PEER_ADDRESS=peer0.org36.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org36.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org36MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org36.example.com/peers/peer0.org36.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org36.example.com/peers/peer0.org36.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org36.example.com:/var/hyperledger/production
+    ports:
+      - 10651:7051
+      - 10653:7053
+  peer0.org37.example.com:
+    container_name: peer0.org37.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org37.example.com
+      - CORE_PEER_ADDRESS=peer0.org37.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org37.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org37MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org37.example.com/peers/peer0.org37.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org37.example.com/peers/peer0.org37.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org37.example.com:/var/hyperledger/production
+    ports:
+      - 10751:7051
+      - 10753:7053
+  peer0.org38.example.com:
+    container_name: peer0.org38.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org38.example.com
+      - CORE_PEER_ADDRESS=peer0.org38.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org38.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org38MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org38.example.com/peers/peer0.org38.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org38.example.com/peers/peer0.org38.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org38.example.com:/var/hyperledger/production
+    ports:
+      - 10851:7051
+      - 10853:7053
+  peer0.org39.example.com:
+    container_name: peer0.org39.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org39.example.com
+      - CORE_PEER_ADDRESS=peer0.org39.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org39.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org39MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org39.example.com/peers/peer0.org39.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org39.example.com/peers/peer0.org39.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org39.example.com:/var/hyperledger/production
+    ports:
+      - 10951:7051
+      - 10953:7053
+  peer0.org40.example.com:
+    container_name: peer0.org40.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org40.example.com
+      - CORE_PEER_ADDRESS=peer0.org40.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org40.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org40MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org40.example.com/peers/peer0.org40.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org40.example.com/peers/peer0.org40.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org40.example.com:/var/hyperledger/production
+    ports:
+      - 11051:7051
+      - 11053:7053
+  peer0.org41.example.com:
+    container_name: peer0.org41.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org41.example.com
+      - CORE_PEER_ADDRESS=peer0.org41.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org41.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org41MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org41.example.com/peers/peer0.org41.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org41.example.com/peers/peer0.org41.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org41.example.com:/var/hyperledger/production
+    ports:
+      - 11151:7051
+      - 11153:7053
+  peer0.org42.example.com:
+    container_name: peer0.org42.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org42.example.com
+      - CORE_PEER_ADDRESS=peer0.org42.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org42.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org42MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org42.example.com/peers/peer0.org42.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org42.example.com/peers/peer0.org42.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org42.example.com:/var/hyperledger/production
+    ports:
+      - 11251:7051
+      - 11253:7053
+  peer0.org43.example.com:
+    container_name: peer0.org43.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org43.example.com
+      - CORE_PEER_ADDRESS=peer0.org43.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org43.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org43MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org43.example.com/peers/peer0.org43.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org43.example.com/peers/peer0.org43.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org43.example.com:/var/hyperledger/production
+    ports:
+      - 11351:7051
+      - 11353:7053
+  peer0.org44.example.com:
+    container_name: peer0.org44.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org44.example.com
+      - CORE_PEER_ADDRESS=peer0.org44.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org44.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org44MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org44.example.com/peers/peer0.org44.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org44.example.com/peers/peer0.org44.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org44.example.com:/var/hyperledger/production
+    ports:
+      - 11451:7051
+      - 11453:7053
+  peer0.org45.example.com:
+    container_name: peer0.org45.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org45.example.com
+      - CORE_PEER_ADDRESS=peer0.org45.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org45.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org45MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org45.example.com/peers/peer0.org45.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org45.example.com/peers/peer0.org45.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org45.example.com:/var/hyperledger/production
+    ports:
+      - 11551:7051
+      - 11553:7053
+  peer0.org46.example.com:
+    container_name: peer0.org46.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org46.example.com
+      - CORE_PEER_ADDRESS=peer0.org46.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org46.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org46MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org46.example.com/peers/peer0.org46.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org46.example.com/peers/peer0.org46.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org46.example.com:/var/hyperledger/production
+    ports:
+      - 11651:7051
+      - 11653:7053
+  peer0.org47.example.com:
+    container_name: peer0.org47.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org47.example.com
+      - CORE_PEER_ADDRESS=peer0.org47.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org47.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org47MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org47.example.com/peers/peer0.org47.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org47.example.com/peers/peer0.org47.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org47.example.com:/var/hyperledger/production
+    ports:
+      - 11751:7051
+      - 11753:7053
+  peer0.org48.example.com:
+    container_name: peer0.org48.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org48.example.com
+      - CORE_PEER_ADDRESS=peer0.org48.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org48.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org48MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org48.example.com/peers/peer0.org48.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org48.example.com/peers/peer0.org48.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org48.example.com:/var/hyperledger/production
+    ports:
+      - 11851:7051
+      - 11853:7053
+  peer0.org49.example.com:
+    container_name: peer0.org49.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org49.example.com
+      - CORE_PEER_ADDRESS=peer0.org49.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org49.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org49MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org49.example.com/peers/peer0.org49.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org49.example.com/peers/peer0.org49.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org49.example.com:/var/hyperledger/production
+    ports:
+      - 11951:7051
+      - 11953:7053
+  peer0.org50.example.com:
+    container_name: peer0.org50.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org50.example.com
+      - CORE_PEER_ADDRESS=peer0.org50.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org50.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org50MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org50.example.com/peers/peer0.org50.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org50.example.com/peers/peer0.org50.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org50.example.com:/var/hyperledger/production
+    ports:
+      - 12051:7051
+      - 12053:7053
+  peer0.org51.example.com:
+    container_name: peer0.org51.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org51.example.com
+      - CORE_PEER_ADDRESS=peer0.org51.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org51.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org51MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org51.example.com/peers/peer0.org51.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org51.example.com/peers/peer0.org51.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org51.example.com:/var/hyperledger/production
+    ports:
+      - 12151:7051
+      - 12153:7053
+  peer0.org52.example.com:
+    container_name: peer0.org52.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org52.example.com
+      - CORE_PEER_ADDRESS=peer0.org52.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org52.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org52MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org52.example.com/peers/peer0.org52.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org52.example.com/peers/peer0.org52.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org52.example.com:/var/hyperledger/production
+    ports:
+      - 12251:7051
+      - 12253:7053
+  peer0.org53.example.com:
+    container_name: peer0.org53.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org53.example.com
+      - CORE_PEER_ADDRESS=peer0.org53.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org53.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org53MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org53.example.com/peers/peer0.org53.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org53.example.com/peers/peer0.org53.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org53.example.com:/var/hyperledger/production
+    ports:
+      - 12351:7051
+      - 12353:7053
+  peer0.org54.example.com:
+    container_name: peer0.org54.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org54.example.com
+      - CORE_PEER_ADDRESS=peer0.org54.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org54.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org54MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org54.example.com/peers/peer0.org54.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org54.example.com/peers/peer0.org54.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org54.example.com:/var/hyperledger/production
+    ports:
+      - 12451:7051
+      - 12453:7053
+  peer0.org55.example.com:
+    container_name: peer0.org55.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org55.example.com
+      - CORE_PEER_ADDRESS=peer0.org55.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org55.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org55MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org55.example.com/peers/peer0.org55.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org55.example.com/peers/peer0.org55.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org55.example.com:/var/hyperledger/production
+    ports:
+      - 12551:7051
+      - 12553:7053
+  peer0.org56.example.com:
+    container_name: peer0.org56.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org56.example.com
+      - CORE_PEER_ADDRESS=peer0.org56.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org56.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org56MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org56.example.com/peers/peer0.org56.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org56.example.com/peers/peer0.org56.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org56.example.com:/var/hyperledger/production
+    ports:
+      - 12651:7051
+      - 12653:7053
+  peer0.org57.example.com:
+    container_name: peer0.org57.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org57.example.com
+      - CORE_PEER_ADDRESS=peer0.org57.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org57.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org57MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org57.example.com/peers/peer0.org57.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org57.example.com/peers/peer0.org57.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org57.example.com:/var/hyperledger/production
+    ports:
+      - 12751:7051
+      - 12753:7053
+  peer0.org58.example.com:
+    container_name: peer0.org58.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org58.example.com
+      - CORE_PEER_ADDRESS=peer0.org58.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org58.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org58MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org58.example.com/peers/peer0.org58.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org58.example.com/peers/peer0.org58.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org58.example.com:/var/hyperledger/production
+    ports:
+      - 12851:7051
+      - 12853:7053
+  peer0.org59.example.com:
+    container_name: peer0.org59.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org59.example.com
+      - CORE_PEER_ADDRESS=peer0.org59.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org59.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org59MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org59.example.com/peers/peer0.org59.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org59.example.com/peers/peer0.org59.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org59.example.com:/var/hyperledger/production
+    ports:
+      - 12951:7051
+      - 12953:7053
+  peer0.org60.example.com:
+    container_name: peer0.org60.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org60.example.com
+      - CORE_PEER_ADDRESS=peer0.org60.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org60.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org60MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org60.example.com/peers/peer0.org60.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org60.example.com/peers/peer0.org60.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org60.example.com:/var/hyperledger/production
+    ports:
+      - 13051:7051
+      - 13053:7053
+  peer0.org61.example.com:
+    container_name: peer0.org61.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org61.example.com
+      - CORE_PEER_ADDRESS=peer0.org61.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org61.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org61MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org61.example.com/peers/peer0.org61.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org61.example.com/peers/peer0.org61.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org61.example.com:/var/hyperledger/production
+    ports:
+      - 13151:7051
+      - 13153:7053
+  peer0.org62.example.com:
+    container_name: peer0.org62.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org62.example.com
+      - CORE_PEER_ADDRESS=peer0.org62.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org62.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org62MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org62.example.com/peers/peer0.org62.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org62.example.com/peers/peer0.org62.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org62.example.com:/var/hyperledger/production
+    ports:
+      - 13251:7051
+      - 13253:7053
+  peer0.org63.example.com:
+    container_name: peer0.org63.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org63.example.com
+      - CORE_PEER_ADDRESS=peer0.org63.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org63.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org63MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org63.example.com/peers/peer0.org63.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org63.example.com/peers/peer0.org63.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org63.example.com:/var/hyperledger/production
+    ports:
+      - 13351:7051
+      - 13353:7053
+  peer0.org64.example.com:
+    container_name: peer0.org64.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org64.example.com
+      - CORE_PEER_ADDRESS=peer0.org64.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org64.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org64MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org64.example.com/peers/peer0.org64.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org64.example.com/peers/peer0.org64.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org64.example.com:/var/hyperledger/production
+    ports:
+      - 13451:7051
+      - 13453:7053
+  peer0.org65.example.com:
+    container_name: peer0.org65.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org65.example.com
+      - CORE_PEER_ADDRESS=peer0.org65.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org65.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org65MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org65.example.com/peers/peer0.org65.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org65.example.com/peers/peer0.org65.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org65.example.com:/var/hyperledger/production
+    ports:
+      - 13551:7051
+      - 13553:7053
+  peer0.org66.example.com:
+    container_name: peer0.org66.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org66.example.com
+      - CORE_PEER_ADDRESS=peer0.org66.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org66.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org66MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org66.example.com/peers/peer0.org66.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org66.example.com/peers/peer0.org66.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org66.example.com:/var/hyperledger/production
+    ports:
+      - 13651:7051
+      - 13653:7053
+  peer0.org67.example.com:
+    container_name: peer0.org67.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org67.example.com
+      - CORE_PEER_ADDRESS=peer0.org67.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org67.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org67MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org67.example.com/peers/peer0.org67.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org67.example.com/peers/peer0.org67.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org67.example.com:/var/hyperledger/production
+    ports:
+      - 13751:7051
+      - 13753:7053
+  peer0.org68.example.com:
+    container_name: peer0.org68.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org68.example.com
+      - CORE_PEER_ADDRESS=peer0.org68.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org68.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org68MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org68.example.com/peers/peer0.org68.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org68.example.com/peers/peer0.org68.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org68.example.com:/var/hyperledger/production
+    ports:
+      - 13851:7051
+      - 13853:7053
+  peer0.org69.example.com:
+    container_name: peer0.org69.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org69.example.com
+      - CORE_PEER_ADDRESS=peer0.org69.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org69.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org69MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org69.example.com/peers/peer0.org69.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org69.example.com/peers/peer0.org69.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org69.example.com:/var/hyperledger/production
+    ports:
+      - 13951:7051
+      - 13953:7053
+  peer0.org70.example.com:
+    container_name: peer0.org70.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org70.example.com
+      - CORE_PEER_ADDRESS=peer0.org70.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org70.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org70MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org70.example.com/peers/peer0.org70.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org70.example.com/peers/peer0.org70.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org70.example.com:/var/hyperledger/production
+    ports:
       - 14051:7051
       - 14053:7053
+  peer0.org71.example.com:
+    container_name: peer0.org71.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org71.example.com
+      - CORE_PEER_ADDRESS=peer0.org71.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org71.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org71MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org71.example.com/peers/peer0.org71.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org71.example.com/peers/peer0.org71.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org71.example.com:/var/hyperledger/production
+    ports:
+      - 14151:7051
+      - 14153:7053
+  peer0.org72.example.com:
+    container_name: peer0.org72.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org72.example.com
+      - CORE_PEER_ADDRESS=peer0.org72.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org72.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org72MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org72.example.com/peers/peer0.org72.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org72.example.com/peers/peer0.org72.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org72.example.com:/var/hyperledger/production
+    ports:
+      - 14251:7051
+      - 14253:7053
+  peer0.org73.example.com:
+    container_name: peer0.org73.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org73.example.com
+      - CORE_PEER_ADDRESS=peer0.org73.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org73.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org73MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org73.example.com/peers/peer0.org73.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org73.example.com/peers/peer0.org73.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org73.example.com:/var/hyperledger/production
+    ports:
+      - 14351:7051
+      - 14353:7053
+  peer0.org74.example.com:
+    container_name: peer0.org74.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org74.example.com
+      - CORE_PEER_ADDRESS=peer0.org74.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org74.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org74MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org74.example.com/peers/peer0.org74.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org74.example.com/peers/peer0.org74.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org74.example.com:/var/hyperledger/production
+    ports:
+      - 14451:7051
+      - 14453:7053
+  peer0.org75.example.com:
+    container_name: peer0.org75.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org75.example.com
+      - CORE_PEER_ADDRESS=peer0.org75.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org75.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org75MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org75.example.com/peers/peer0.org75.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org75.example.com/peers/peer0.org75.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org75.example.com:/var/hyperledger/production
+    ports:
+      - 14551:7051
+      - 14553:7053
+  peer0.org76.example.com:
+    container_name: peer0.org76.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org76.example.com
+      - CORE_PEER_ADDRESS=peer0.org76.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org76.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org76MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org76.example.com/peers/peer0.org76.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org76.example.com/peers/peer0.org76.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org76.example.com:/var/hyperledger/production
+    ports:
+      - 14651:7051
+      - 14653:7053
+  peer0.org77.example.com:
+    container_name: peer0.org77.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org77.example.com
+      - CORE_PEER_ADDRESS=peer0.org77.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org77.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org77MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org77.example.com/peers/peer0.org77.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org77.example.com/peers/peer0.org77.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org77.example.com:/var/hyperledger/production
+    ports:
+      - 14751:7051
+      - 14753:7053
+  peer0.org78.example.com:
+    container_name: peer0.org78.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org78.example.com
+      - CORE_PEER_ADDRESS=peer0.org78.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org78.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org78MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org78.example.com/peers/peer0.org78.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org78.example.com/peers/peer0.org78.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org78.example.com:/var/hyperledger/production
+    ports:
+      - 14851:7051
+      - 14853:7053
+  peer0.org79.example.com:
+    container_name: peer0.org79.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org79.example.com
+      - CORE_PEER_ADDRESS=peer0.org79.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org79.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org79MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org79.example.com/peers/peer0.org79.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org79.example.com/peers/peer0.org79.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org79.example.com:/var/hyperledger/production
+    ports:
+      - 14951:7051
+      - 14953:7053
+  peer0.org80.example.com:
+    container_name: peer0.org80.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org80.example.com
+      - CORE_PEER_ADDRESS=peer0.org80.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org80.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org80MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org80.example.com/peers/peer0.org80.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org80.example.com/peers/peer0.org80.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org80.example.com:/var/hyperledger/production
+    ports:
+      - 15051:7051
+      - 15053:7053
+  peer0.org81.example.com:
+    container_name: peer0.org81.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org81.example.com
+      - CORE_PEER_ADDRESS=peer0.org81.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org81.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org81MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org81.example.com/peers/peer0.org81.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org81.example.com/peers/peer0.org81.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org81.example.com:/var/hyperledger/production
+    ports:
+      - 15151:7051
+      - 15153:7053
+  peer0.org82.example.com:
+    container_name: peer0.org82.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org82.example.com
+      - CORE_PEER_ADDRESS=peer0.org82.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org82.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org82MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org82.example.com/peers/peer0.org82.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org82.example.com/peers/peer0.org82.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org82.example.com:/var/hyperledger/production
+    ports:
+      - 15251:7051
+      - 15253:7053
+  peer0.org83.example.com:
+    container_name: peer0.org83.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org83.example.com
+      - CORE_PEER_ADDRESS=peer0.org83.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org83.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org83MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org83.example.com/peers/peer0.org83.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org83.example.com/peers/peer0.org83.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org83.example.com:/var/hyperledger/production
+    ports:
+      - 15351:7051
+      - 15353:7053
+  peer0.org84.example.com:
+    container_name: peer0.org84.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org84.example.com
+      - CORE_PEER_ADDRESS=peer0.org84.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org84.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org84MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org84.example.com/peers/peer0.org84.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org84.example.com/peers/peer0.org84.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org84.example.com:/var/hyperledger/production
+    ports:
+      - 15451:7051
+      - 15453:7053
+  peer0.org85.example.com:
+    container_name: peer0.org85.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org85.example.com
+      - CORE_PEER_ADDRESS=peer0.org85.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org85.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org85MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org85.example.com/peers/peer0.org85.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org85.example.com/peers/peer0.org85.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org85.example.com:/var/hyperledger/production
+    ports:
+      - 15551:7051
+      - 15553:7053
+  peer0.org86.example.com:
+    container_name: peer0.org86.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org86.example.com
+      - CORE_PEER_ADDRESS=peer0.org86.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org86.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org86MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org86.example.com/peers/peer0.org86.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org86.example.com/peers/peer0.org86.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org86.example.com:/var/hyperledger/production
+    ports:
+      - 15651:7051
+      - 15653:7053
+  peer0.org87.example.com:
+    container_name: peer0.org87.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org87.example.com
+      - CORE_PEER_ADDRESS=peer0.org87.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org87.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org87MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org87.example.com/peers/peer0.org87.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org87.example.com/peers/peer0.org87.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org87.example.com:/var/hyperledger/production
+    ports:
+      - 15751:7051
+      - 15753:7053
+  peer0.org88.example.com:
+    container_name: peer0.org88.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org88.example.com
+      - CORE_PEER_ADDRESS=peer0.org88.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org88.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org88MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org88.example.com/peers/peer0.org88.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org88.example.com/peers/peer0.org88.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org88.example.com:/var/hyperledger/production
+    ports:
+      - 15851:7051
+      - 15853:7053
+  peer0.org89.example.com:
+    container_name: peer0.org89.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org89.example.com
+      - CORE_PEER_ADDRESS=peer0.org89.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org89.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org89MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org89.example.com/peers/peer0.org89.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org89.example.com/peers/peer0.org89.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org89.example.com:/var/hyperledger/production
+    ports:
+      - 15951:7051
+      - 15953:7053
+  peer0.org90.example.com:
+    container_name: peer0.org90.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org90.example.com
+      - CORE_PEER_ADDRESS=peer0.org90.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org90.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org90MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org90.example.com/peers/peer0.org90.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org90.example.com/peers/peer0.org90.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org90.example.com:/var/hyperledger/production
+    ports:
+      - 16051:7051
+      - 16053:7053
+  peer0.org91.example.com:
+    container_name: peer0.org91.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org91.example.com
+      - CORE_PEER_ADDRESS=peer0.org91.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org91.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org91MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org91.example.com/peers/peer0.org91.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org91.example.com/peers/peer0.org91.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org91.example.com:/var/hyperledger/production
+    ports:
+      - 16151:7051
+      - 16153:7053
+  peer0.org92.example.com:
+    container_name: peer0.org92.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org92.example.com
+      - CORE_PEER_ADDRESS=peer0.org92.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org92.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org92MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org92.example.com/peers/peer0.org92.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org92.example.com/peers/peer0.org92.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org92.example.com:/var/hyperledger/production
+    ports:
+      - 16251:7051
+      - 16253:7053
+  peer0.org93.example.com:
+    container_name: peer0.org93.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org93.example.com
+      - CORE_PEER_ADDRESS=peer0.org93.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org93.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org93MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org93.example.com/peers/peer0.org93.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org93.example.com/peers/peer0.org93.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org93.example.com:/var/hyperledger/production
+    ports:
+      - 16351:7051
+      - 16353:7053
+  peer0.org94.example.com:
+    container_name: peer0.org94.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org94.example.com
+      - CORE_PEER_ADDRESS=peer0.org94.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org94.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org94MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org94.example.com/peers/peer0.org94.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org94.example.com/peers/peer0.org94.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org94.example.com:/var/hyperledger/production
+    ports:
+      - 16451:7051
+      - 16453:7053
+  peer0.org95.example.com:
+    container_name: peer0.org95.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org95.example.com
+      - CORE_PEER_ADDRESS=peer0.org95.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org95.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org95MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org95.example.com/peers/peer0.org95.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org95.example.com/peers/peer0.org95.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org95.example.com:/var/hyperledger/production
+    ports:
+      - 16551:7051
+      - 16553:7053
+  peer0.org96.example.com:
+    container_name: peer0.org96.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org96.example.com
+      - CORE_PEER_ADDRESS=peer0.org96.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org96.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org96MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org96.example.com/peers/peer0.org96.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org96.example.com/peers/peer0.org96.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org96.example.com:/var/hyperledger/production
+    ports:
+      - 16651:7051
+      - 16653:7053
+  peer0.org97.example.com:
+    container_name: peer0.org97.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org97.example.com
+      - CORE_PEER_ADDRESS=peer0.org97.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org97.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org97MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org97.example.com/peers/peer0.org97.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org97.example.com/peers/peer0.org97.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org97.example.com:/var/hyperledger/production
+    ports:
+      - 16751:7051
+      - 16753:7053
+  peer0.org98.example.com:
+    container_name: peer0.org98.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org98.example.com
+      - CORE_PEER_ADDRESS=peer0.org98.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org98.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org98MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org98.example.com/peers/peer0.org98.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org98.example.com/peers/peer0.org98.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org98.example.com:/var/hyperledger/production
+    ports:
+      - 16851:7051
+      - 16853:7053
+  peer0.org99.example.com:
+    container_name: peer0.org99.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org99.example.com
+      - CORE_PEER_ADDRESS=peer0.org99.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org99.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org99MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org99.example.com/peers/peer0.org99.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org99.example.com/peers/peer0.org99.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org99.example.com:/var/hyperledger/production
+    ports:
+      - 16951:7051
+      - 16953:7053
+  peer0.org100.example.com:
+    container_name: peer0.org100.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org100.example.com
+      - CORE_PEER_ADDRESS=peer0.org100.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org100.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org100MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org100.example.com/peers/peer0.org100.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org100.example.com/peers/peer0.org100.example.com/tls:/etc/hyperledger/fabric/tls
+      - peer0.org100.example.com:/var/hyperledger/production
+    ports:
+      - 17051:7051
+      - 17053:7053

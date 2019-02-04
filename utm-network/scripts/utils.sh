@@ -36,37 +36,6 @@ setGlobals() {
   CORE_PEER_TLS_ROOTCERT_FILE="/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org${ORG}.example.com/peers/peer0.org${ORG}.example.com/tls/ca.crt"
   CORE_PEER_MSPCONFIGPATH="/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org${ORG}.example.com/users/Admin@org${ORG}.example.com/msp"
   CORE_PEER_ADDRESS="peer${PEER}.org${ORG}.example.com:7051"
-  # if [ $ORG -eq 1 ]; then
-  #   CORE_PEER_LOCALMSPID="Org1MSP"
-  #   CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
-  #   CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-  #   if [ $PEER -eq 0 ]; then
-  #     CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-  #   else
-  #     CORE_PEER_ADDRESS=peer1.org1.example.com:7051
-  #   fi
-  # elif [ $ORG -eq 2 ]; then
-  #   CORE_PEER_LOCALMSPID="Org2MSP"
-  #   CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
-  #   CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
-  #   if [ $PEER -eq 0 ]; then
-  #     CORE_PEER_ADDRESS=peer0.org2.example.com:7051
-  #   else
-  #     CORE_PEER_ADDRESS=peer1.org2.example.com:7051
-  #   fi
-
-  # elif [ $ORG -eq 3 ]; then
-  #   CORE_PEER_LOCALMSPID="Org3MSP"
-  #   CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
-  #   CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
-  #   if [ $PEER -eq 0 ]; then
-  #     CORE_PEER_ADDRESS=peer0.org3.example.com:7051
-  #   else
-  #     CORE_PEER_ADDRESS=peer1.org3.example.com:7051
-  #   fi
-  # else
-  #   echo "================== ERROR !!! ORG Unknown =================="
-  # fi
 
   if [ "$VERBOSE" == "true" ]; then
     env | grep CORE
@@ -138,13 +107,18 @@ instantiateChaincode() {
   ORG=$2
   setGlobals $PEER $ORG
   VERSION=${3:-1.0}
+	ENDORSE="'Org1MSP.peer'"
+	for((org=2;org<=$MAX_ORG;org++)); do
+		ENDORSE+=",'Org${org}MSP.peer'"
+	done
+	echo "$ENDORSE"
 
   # while 'peer chaincode' command can get the orderer endpoint from the peer
   # (if join was successful), let's supply it directly as we know it using
   # the "-o" option
   if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
     set -x
-    peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init",""]}' -P "AND ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer','Org4MSP.peer','Org5MSP.peer','Org6MSP.peer','Org7MSP.peer','Org8MSP.peer')" >&log.txt
+    peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init",""]}' -P "AND (${ENDORSE})" >&log.txt
     res=$?
     set +x
   else
@@ -165,7 +139,6 @@ upgradeChaincode() {
   setGlobals $PEER $ORG
 
   set -x
-  # 後ほど追加する
   peer chaincode upgrade -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 2.0 -c '{"Args":[]}' -P "AND ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
   res=$?
   set +x
@@ -302,26 +275,30 @@ parsePeerConnectionParameters() {
 # chaincodeInvoke <peer> <org> ...
 # Accepts as many peer/org pairs as desired and requests endorsement from each
 chaincodeInvoke() {
-  parsePeerConnectionParameters $@
-  res=$?
+  #parsePeerConnectionParameters $@
+  #res=$?
   verifyResult $res "Invoke transaction failed on channel '$CHANNEL_NAME' due to uneven number of peer and org parameters "
+  PEER_PARAMS=" --peerAddresses peer0.org1.example.com:7051"
+	for((org=2;org<=$MAX_ORG;org++)); do
+		PEER_PARAMS+=" --peerAddresses peer0.org$org.example.com:7051"
+	done
 
   # while 'peer chaincode' command can get the orderer endpoint from the
   # peer (if join was successful), let's supply it directly as we know
   # it using the "-o" option
   if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
     set -x
-    peer chaincode invoke -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc $PEER_CONN_PARMS -c '{"Args":["invoke","a","b","10"]}' >&log.txt
+    peer chaincode invoke -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc $PEER_PARAMS -c '{"Args":["registerPlan","TestUser", "[]"]}' >&log.txt
     res=$?
     set +x
   else
     set -x
-    peer chaincode invoke -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc $PEER_CONN_PARMS -c '{"Args":["invoke","a","b","10"]}' >&log.txt
+    peer chaincode invoke -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc $PEER_CONN_PARMS -c '{"Args":["invoke",""]}' >&log.txt
     res=$?
     set +x
   fi
   cat log.txt
-  verifyResult $res "Invoke execution on $PEERS failed "
+  verifyResult $res "Invoke execution failed "
   echo "===================== Invoke transaction successful on $PEERS on channel '$CHANNEL_NAME' ===================== "
   echo
 }

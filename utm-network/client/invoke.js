@@ -16,56 +16,34 @@ var fs = require('fs')
 const { performance } = require('perf_hooks')
 
 //
-var fabric_client = new Fabric_Client()
-
-// setup the fabric network
-var channel = fabric_client.newChannel('mychannel')
-
-var peer1 = fabric_client.newPeer('grpc://localhost:7051', {
-  name: 'peer1'
-})
-channel.addPeer(peer1)
-var peer2 = fabric_client.newPeer('grpc://localhost:8051', {
-  name: 'peer2'
-})
-channel.addPeer(peer2)
-var peer3 = fabric_client.newPeer('grpc://localhost:9051', {
-  name: 'peer3'
-})
-channel.addPeer(peer3)
-var peer4 = fabric_client.newPeer('grpc://localhost:10051', {
-  name: 'peer4'
-})
-channel.addPeer(peer4)
-var peer5 = fabric_client.newPeer('grpc://localhost:11051', {
-  name: 'peer5'
-})
-channel.addPeer(peer5)
-var peer6 = fabric_client.newPeer('grpc://localhost:12051', {
-  name: 'peer6'
-})
-channel.addPeer(peer6)
-var peer7 = fabric_client.newPeer('grpc://localhost:13051', {
-  name: 'peer7'
-})
-channel.addPeer(peer7)
-var peer8 = fabric_client.newPeer('grpc://localhost:14051', {
-  name: 'peer8'
-})
-channel.addPeer(peer8)
-
-var order = fabric_client.newOrderer('grpc://localhost:7050')
-channel.addOrderer(order)
-
-var member_user = null
-var store_path = path.join(__dirname, 'hfc-key-store')
-console.log('Store path:' + store_path)
-var tx_id = null
 
 // measure processing time
 let pstartTime, pendTime
 
-var invoke = function(args) {
+var invoke = function({user, numOfOrgs}) {
+	var fabric_client = new Fabric_Client()
+
+	// setup the fabric network
+	var channel = fabric_client.newChannel('mychannel')
+	var order = fabric_client.newOrderer('grpc://localhost:7050')
+	channel.addOrderer(order)
+
+	var member_user = null
+	var store_path = path.join(__dirname, 'hfc-key-store')
+	console.log('Store path:' + store_path)
+	var tx_id = null
+  let targets = []
+	console.log(targets)
+	for(let i=1;i<=numOfOrgs;i++){
+		let peerName=`peer${i}`
+			channel.addPeer(
+					fabric_client.newPeer(`grpc:\/\/localhost:${i+70}51`, {
+						name: peerName
+					})
+					)
+			targets.push(peerName)
+	}
+  //console.log(args)
   return new Promise(function(resolve, reject) {
     // create the key value store as defined in the fabric-client/config/default.json 'key-value-store' setting
     Fabric_Client.newDefaultKeyValueStore({ path: store_path })
@@ -98,32 +76,25 @@ var invoke = function(args) {
         // changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
         // must send the proposal to endorsing peers
         var request = {
-          targets: [
-            'peer1',
-            'peer2',
-            'peer3',
-            'peer4',
-            'peer5',
-            'peer6',
-            'peer7',
-            'peer8'
-          ],
+          targets: targets,
           chaincodeId: 'mycc',
           fcn: 'registerPlan',
-          args: [args.name, JSON.stringify(args.flightPlan)],
+          args: [user.name, JSON.stringify(user.flightPlan)],
           chainId: 'mychannel',
           txId: tx_id
         }
 
         pstartTime = performance.now()
         // send the transaction proposal to the peers
-        return channel.sendTransactionProposal(request, 9999999)
+        return channel.sendTransactionProposal(request, 300000)
       })
       .then(results => {
-        pendTime = performance.now()
         var proposalResponses = results[0]
         var proposal = results[1]
         let isProposalGood = false
+				console.log("--------------------------")
+				console.log(proposalResponses)
+				console.log("--------------------------")
         if (
           proposalResponses &&
           proposalResponses[0].response &&
@@ -155,12 +126,12 @@ var invoke = function(args) {
           var transaction_id_string = tx_id.getTransactionID() //Get the transaction ID string to be used by the event processing
           var promises = []
 
-          var sendPromise = channel.sendTransaction(request)
+          var sendPromise = channel.sendTransaction(request, 300000)
           promises.push(sendPromise) //we want the send transaction first, so that we know where to check status
 
           // get an eventhub once the fabric client has a user assigned. The user
           // is required bacause the event registration must be signed
-          let event_hub = channel.newChannelEventHub(peer1)
+          let event_hub = channel.newChannelEventHub(targets[0])
 
           // using resolve the promise so that result status may be processed
           // under the then clause rather than having the catch clause process
@@ -170,10 +141,11 @@ var invoke = function(args) {
               event_hub.unregisterTxEvent(transaction_id_string)
               event_hub.disconnect()
               resolve({ event_status: 'TIMEOUT' }) //we could use reject(new Error('Trnasaction did not complete within 30 seconds'));
-            }, 9999999)
+            }, 300000)
             event_hub.registerTxEvent(
               transaction_id_string,
               (tx, code) => {
+                pendTime = performance.now()
                 // this is the callback for transaction event status
                 // first some clean up of event listener
                 clearTimeout(handle)
@@ -242,6 +214,7 @@ var invoke = function(args) {
           )
           reject(pendTime - pstartTime)
         }
+				reject(pendTime - pstartTime)
       })
       .catch(err => {
         console.error('Failed to invoke successfully :: ' + err)
