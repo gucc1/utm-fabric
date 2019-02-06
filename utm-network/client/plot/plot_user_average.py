@@ -11,7 +11,7 @@ for numOfNode in [1, 2, 4, 8, 16, 30]:
     for numOfRequest in requests:
 
         rawData = np.loadtxt(path + "/user" + str(numOfRequest),
-                        delimiter=' ', skiprows=1, usecols=(1, 2), dtype=str)
+                        delimiter=' ', skiprows=0, usecols=(1, 2), dtype=str)
 
         successData = []
         for data in rawData:
@@ -33,5 +33,5 @@ plt.ylabel('Latency(ms)')
 plt.legend()
 
 # 保存
-plt.savefig('test.png')
+# plt.savefig('test.png')
 plt.show()
