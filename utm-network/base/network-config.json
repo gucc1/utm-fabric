@@ -1,0 +1,15 @@
+      "org{NUM_OF_ORG}": {
+        "name": "peerOrg{NUM_OF_ORG}",
+        "mspid": "Org{NUM_OF_ORG}MSP",
+        "msp": "network/utm/config/crypto-config/peerOrganizations/org{NUM_OF_ORG}.example.com/msp/",
+        "ca": {
+          "url": "http://localhost:7154",
+          "name": "ca.org1.example.com"
+        },
+        "peer1": {
+          "requests": "grpc://localhost:{PORT}51",
+          "events": "grpc://localhost:{PORT}53",
+          "server-hostname": "peer0.org{NUM_OF_ORG}.example.com",
+          "tls_cacerts": "network/utm/config/crypto-config/peerOrganizations/org{NUM_OF_ORG}.example.com/peers/peer0.org{NUM_OF_ORG}.example.com/tls/ca.crt"
+        }
+      },
