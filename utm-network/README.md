@@ -38,7 +38,7 @@ Chaincode は、`chaincode/utm/`以下にある
 
 ### Client
 
-`client/`以下に[hyperledger/fabric-sdk-node](https://github.com/hyperledger/fabric-sdk-node)を利用したスクリプトがいくつか配置してある。研究におけるベンチマークを当初こちらで行っていたが、[caliper]()へ移行したため、基本的なクライアントからのアクセスの仕方のみを説明する
+`client/`以下に[hyperledger/fabric-sdk-node](https://github.com/hyperledger/fabric-sdk-node)を利用したスクリプトがいくつか配置してある。研究におけるベンチマークを当初こちらで行っていたが、[caliper](https://github.com/gucc1/utm-caliper)へ移行したため、基本的なクライアントからのアクセスの仕方のみを説明する
 
 1. クライアント用の鍵を生成する
 

@@ -18,3 +18,8 @@ are 1.3.0, 1.3.0 and 0.4.13 respectively.
 ```
 
 `bin/`へ PATH を通す
+
+## Other
+
+Chaincode は、`chaincode/utm`以下  
+`chaincode-docker-devmode`は、公式のままなのでそれを参照して利用が可能
